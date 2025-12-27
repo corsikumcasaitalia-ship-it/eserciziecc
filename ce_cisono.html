@@ -3,220 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C'è o Ci sono? - Trova le Differenze</title>
+    <title>C'è o Ci sono? (30 Domande)</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #eef2f5;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-
-        header {
-            background-color: #27ae60;
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        h1 { margin: 0; font-size: 1.6rem; }
-        p { margin-top: 5px; opacity: 0.9; }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            display: grid;
-            gap: 15px;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border-left: 5px solid #27ae60;
-        }
-
-        .question {
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-
-        .options button {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: #fff;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.2s;
-            color: #555;
-        }
-
-        .options button:hover {
-            background-color: #f0f9f4;
-            border-color: #27ae60;
-        }
-
-        .options button.correct {
-            background-color: #d4efdf !important;
-            border-color: #27ae60 !important;
-            color: #0e6655 !important;
-            font-weight: bold;
-        }
-
-        .options button.wrong {
-            background-color: #fadbd8 !important;
-            border-color: #e74c3c !important;
-            color: #922b21 !important;
-            opacity: 0.6;
-        }
-
-        #score-panel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #333;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            display: none;
-        }
+        body { font-family: 'Verdana', sans-serif; background: #e0f7fa; padding: 20px; color: #333; }
+        header { background: #0097a7; color: white; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
+        .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 5px solid #0097a7; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .q-text { font-weight: bold; margin-bottom: 10px; font-size: 1.1rem; }
+        button { display: block; width: 100%; text-align: left; padding: 12px; margin: 5px 0; border: 1px solid #ccc; background: #fff; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+        button:hover { background: #f1f1f1; }
+        button.correct { background: #c8e6c9; border-color: #2e7d32; color: #1b5e20; font-weight: bold; }
+        button.wrong { background: #ffcdd2; border-color: #c62828; opacity: 0.7; }
+        #score { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 10px 20px; border-radius: 30px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>🔎 C'è o Ci sono?</h1>
-    <p>Guarda le immagini A e B sulla pagina 50 e trova le differenze.</p>
+    <h1>🔎 Trova le differenze (Pag. 50)</h1>
+    <p>Guarda le immagini A e B e rispondi.</p>
 </header>
 
-<div class="container" id="quiz-container">
-    </div>
-
-<div id="score-panel">Punti: <span id="score">0</span> / 12</div>
+<div id="quiz"></div>
+<div id="score">Punti: <span id="points">0</span>/30</div>
 
 <script>
     const questions = [
-        {
-            text: "1. Nell'immagine A:",
-            options: ["C'è un camino.", "Ci sono due camini.", "Non c'è il camino."],
-            ans: 0
-        },
-        {
-            text: "2. Sulla poltrona dell'immagine A:",
-            options: ["C'è un cane che dorme.", "C'è un gatto che dorme.", "Ci sono dei libri."],
-            ans: 1
-        },
-        {
-            text: "3. Nell'immagine B, sulla parete:",
-            options: ["C'è una televisione nera.", "Ci sono due televisioni.", "C'è un grande specchio."],
-            ans: 0
-        },
-        {
-            text: "4. Al centro della stanza nell'immagine A:",
-            options: ["C'è un tavolino rotondo.", "C'è un tavolino quadrato.", "Ci sono due tavolini."],
-            ans: 1
-        },
-        {
-            text: "5. Sul divano dell'immagine B:",
-            options: ["Ci sono dei cuscini gialli.", "C'è un cuscino bianco.", "Non ci sono cuscini."],
-            ans: 0
-        },
-        {
-            text: "6. Nell'immagine A, vicino alla finestra:",
-            options: ["C'è una libreria alta con i libri.", "C'è una libreria bassa senza libri.", "Ci sono due librerie."],
-            ans: 0
-        },
-        {
-            text: "7. Nell'immagine B, sopra il mobile basso:",
-            options: ["C'è un solo quadro grande.", "Ci sono due piccoli quadri.", "Non c'è nessun quadro."],
-            ans: 1
-        },
-        {
-            text: "8. In tutte e due le immagini:",
-            options: ["C'è una sola finestra.", "Ci sono due finestre.", "Non ci sono finestre."],
-            ans: 1
-        },
-        {
-            text: "9. Dietro la poltrona nell'immagine B:",
-            options: ["C'è una pianta verde.", "Ci sono due piante.", "C'è una lampada rossa."],
-            ans: 0
-        },
-        {
-            text: "10. Sopra il camino nell'immagine A:",
-            options: ["C'è un vaso di fiori.", "Ci sono due gatti.", "C'è la televisione."],
-            ans: 0
-        },
-        {
-            text: "11. Nella stanza dell'immagine B:",
-            options: ["C'è un divano blu.", "Ci sono due divani blu.", "C'è un divano rosso."],
-            ans: 0
-        },
-        {
-            text: "12. Sul pavimento, in entrambe le foto:",
-            options: ["C'è un tappeto verde.", "Ci sono due tappeti rossi.", "Non c'è il tappeto."],
-            ans: 0
-        }
+        {q: "1. Nell'immagine A:", o: ["C'è un camino.", "Ci sono due camini.", "Non c'è il camino."], a: 0},
+        {q: "2. Sulla poltrona dell'immagine A:", o: ["C'è un cane.", "C'è un gatto.", "Ci sono dei libri."], a: 1},
+        {q: "3. Nell'immagine B, sulla parete:", o: ["C'è una TV nera.", "Ci sono due TV.", "C'è uno specchio."], a: 0},
+        {q: "4. Al centro della stanza in A:", o: ["C'è un tavolino rotondo.", "C'è un tavolino quadrato.", "Non c'è il tavolo."], a: 1},
+        {q: "5. Sul divano dell'immagine B:", o: ["Ci sono cuscini gialli.", "C'è un cuscino bianco.", "Non ci sono cuscini."], a: 0},
+        {q: "6. In A, vicino alla finestra:", o: ["C'è una libreria alta.", "C'è una libreria bassa.", "Ci sono due librerie."], a: 0},
+        {q: "7. In B, sopra il mobile basso:", o: ["C'è un quadro grande.", "Ci sono due quadretti.", "Non c'è nessun quadro."], a: 1},
+        {q: "8. In entrambe le immagini:", o: ["C'è una finestra sola.", "Ci sono due finestre.", "Non ci sono finestre."], a: 1},
+        {q: "9. Dietro la poltrona in B:", o: ["C'è una pianta verde.", "Ci sono due piante.", "C'è una lampada rossa."], a: 0},
+        {q: "10. Sopra il camino in A:", o: ["C'è un vaso di fiori.", "Ci sono due gatti.", "C'è la TV."], a: 0},
+        {q: "11. Nella stanza dell'immagine B:", o: ["C'è un divano blu.", "Ci sono due divani.", "C'è un divano rosso."], a: 0},
+        {q: "12. Sul pavimento, in entrambe:", o: ["C'è un tappeto verde.", "C'è un tappeto rosso.", "Non c'è il tappeto."], a: 0},
+        {q: "13. Sul tavolino dell'immagine B:", o: ["C'è un vaso.", "Ci sono delle riviste.", "Non c'è niente."], a: 1},
+        {q: "14. La libreria dell'immagine B:", o: ["È alta e piena.", "È bassa e bianca.", "Non c'è."], a: 1},
+        {q: "15. Dov'è il gatto in B?", o: ["Sulla poltrona.", "Sul divano.", "Non c'è."], a: 2},
+        {q: "16. In A, sopra il camino:", o: ["C'è un quadro grande.", "Ci sono due piccoli.", "C'è uno specchio."], a: 0},
+        {q: "17. Vicino alla porta in A:", o: ["C'è una pianta.", "C'è una sedia.", "Non c'è nulla."], a: 0},
+        {q: "18. Che lampada c'è in entrambe?", o: ["Lampada ad arco.", "Lampada da tavolo.", "Lampadario."], a: 0},
+        {q: "19. Sulla poltrona in B:", o: ["C'è un cuscino.", "C'è il gatto.", "Non c'è niente."], a: 2},
+        {q: "20. Forma del tavolino in B:", o: ["Quadrato.", "Rotondo.", "Ovale."], a: 1},
+        {q: "21. Quanti cuscini sul divano in B?", o: ["Uno.", "Due gialli.", "Tre."], a: 1},
+        {q: "22. In A, dentro il camino:", o: ["C'è il fuoco (acceso).", "È spento.", "C'è acqua."], a: 0},
+        {q: "23. Al centro (A e B):", o: ["Ci sono due poltrone.", "C'è 1 poltrona e 1 divano.", "Due divani."], a: 1},
+        {q: "24. Colore della parete:", o: ["Verde chiaro.", "Bianca.", "Rossa."], a: 0},
+        {q: "25. Vicino al tavolino in B:", o: ["C'è un tavolino nero.", "C'è una sedia.", "Nulla."], a: 0},
+        {q: "26. Sul tavolino in A:", o: ["C'è un libro rosso.", "C'è un telecomando.", "C'è un PC."], a: 0},
+        {q: "27. La pianta in B è:", o: ["Vicino alla porta.", "Dietro la poltrona.", "Sul tavolo."], a: 1},
+        {q: "28. Sopra la TV in B:", o: ["Non c'è nulla.", "Ci sono quadri.", "C'è una finestra."], a: 1},
+        {q: "29. Il mobile in B è:", o: ["Lungo e basso.", "Alto e stretto.", "Rotondo."], a: 0},
+        {q: "30. I fiori in A sono:", o: ["Sul camino.", "Sul tavolo.", "Per terra."], a: 0}
     ];
 
-    const container = document.getElementById('quiz-container');
-    const scorePanel = document.getElementById('score-panel');
-    const scoreSpan = document.getElementById('score');
-    let currentScore = 0;
+    let points = 0;
+    const container = document.getElementById('quiz');
+    const scoreSpan = document.getElementById('points');
 
-    // Generazione Quiz
-    questions.forEach((q, index) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        let buttonsHTML = '';
-        q.options.forEach((opt, i) => {
-            buttonsHTML += `<button onclick="checkAnswer(this, ${index}, ${i})">${opt}</button>`;
+    questions.forEach((q, idx) => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        let bts = '';
+        q.o.forEach((opt, i) => {
+            bts += `<button onclick="check(this, ${idx}, ${i})">${opt}</button>`;
         });
-
-        card.innerHTML = `
-            <div class="question">${q.text}</div>
-            <div class="options" id="opt-container-${index}">
-                ${buttonsHTML}
-            </div>
-        `;
-        container.appendChild(card);
+        div.innerHTML = `<div class="q-text">${q.q}</div>${bts}`;
+        container.appendChild(div);
     });
 
-    scorePanel.style.display = 'block';
-
-    function checkAnswer(btn, qIndex, optIndex) {
-        const correctIndex = questions[qIndex].ans;
-        const parent = document.getElementById(`opt-container-${qIndex}`);
-        const allBtns = parent.querySelectorAll('button');
-
-        // Disabilita click successivi
-        allBtns.forEach(b => b.disabled = true);
-
-        if (optIndex === correctIndex) {
+    function check(btn, qIdx, optIdx) {
+        const p = btn.parentElement;
+        const all = p.querySelectorAll('button');
+        all.forEach(b => b.disabled = true);
+        if(optIdx === questions[qIdx].a) {
             btn.classList.add('correct');
-            currentScore++;
-            scoreSpan.textContent = currentScore;
+            points++;
+            scoreSpan.innerText = points;
         } else {
             btn.classList.add('wrong');
-            // Mostra quella giusta
-            allBtns[correctIndex].classList.add('correct');
+            all[questions[qIdx].a].classList.add('correct');
         }
     }
 </script>
-
 </body>
 </html>
