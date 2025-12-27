@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciao a tutti!👋 Iniziamo </title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2980b9; /* İtalyan Mavisi */
+            --accent: #27ae60;  /* Onay Yeşili */
+            --wrong: #c0392b;   /* Hata Kırmızısı */
+            --bg: #f4f6f7;
+            --card: #ffffff;
+            --text: #2c3e50;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* Responsive Header */
+        header {
+            background: linear-gradient(135deg, #009246, #ffffff, #ce2b37); /* İtalyan Bayrağı renkleri */
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            color: #2c3e50;
+            text-shadow: 1px 1px 2px white;
+            font-size: 1.8rem;
+        }
+        header p { margin: 5px 0 0; color: #333; font-weight: bold; }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* Modül Kartları */
+        .module {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--primary);
+        }
+
+        h2 { color: var(--primary); border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-top: 0; }
+        
+        /* Bilgi Kutucukları (PDF Gramer Notları) */
+        .info-box {
+            background-color: #eaf2f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            border: 1px solid #d6eaf8;
+        }
+        .info-box strong { color: #2980b9; }
+
+        /* Diyalog Balonları */
+        .chat-bubble {
+            background: #f1f1f1;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin: 10px 0;
+            display: inline-block;
+            max-width: 85%;
+            font-style: italic;
+        }
+        .chat-bubble.right {
+            background: #d4e6f1;
+            float: right;
+            text-align: right;
+        }
+        .clearfix::after { content: ""; clear: both; display: table; }
+
+        /* Kartvizit Görünümü */
+        .biz-card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        .biz-card {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 15px;
+            width: 100%;
+            max-width: 250px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+            font-family: serif;
+        }
+        .biz-card h4 { margin: 0 0 5px; text-transform: uppercase; color: #000; }
+        .biz-card p { margin: 0; font-size: 0.9rem; color: #555; }
+
+        /* Form Elemanları */
+        .question-group {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px; /* Mobil zoom önlemek için */
+            background-color: #f9f9f9;
+        }
+        input:focus { border-color: var(--primary); outline: none; background: #fff; }
+
+        /* Tablolar (Mobil Kaydırmalı) */
+        .table-wrap { overflow-x: auto; margin-bottom: 15px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 400px;
+        }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        th { background-color: var(--primary); color: white; }
+        
+        /* Buton */
+        .btn-check {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-check:hover { background-color: #1a5276; }
+
+        /* Feedback */
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback.success { background-color: #d5f5e3; color: #196f3d; border: 1px solid #abebc6; }
+        .feedback.error { background-color: #fadbd8; color: #943126; border: 1px solid #f5b7b1; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Corso d'Italiano</h1>
+    <p>Unità 1: Come va? (Kapsamlı Alıştırma)</p>
+</header>
+
+<div class="container">
+
+    <div class="module">
+        <h2>1. I Saluti (Selamlaşma)</h2>
+        <div class="info-box">
+            <strong>Resmiyet Kuralı:</strong> <br>
+            Tanıdıklar/Arkadaşlar: <em>Ciao, Tu (Sen)</em> <br>
+            Tanımadıklar/Üstler: <em>Buongiorno/Buonasera, Lei (Siz)</em>
+        </div>
+
+        <div class="question-group clearfix">
+            <div class="chat-bubble">Ciao, Gianni! Come stai?</div>
+            <div class="chat-bubble right">________, grazie. E tu?</div>
+            <input type="text" id="q1_1" placeholder="Cevabı yazın (Bene/Male vb.)">
+        </div>
+
+        <div class="question-group clearfix">
+            <div class="chat-bubble">Buongiorno, Signor Cervi. Come ________?</div>
+            <div class="chat-bubble right">Non c'è male, grazie. E ________?</div>
+            <select id="q1_2">
+                <option value="">Fiili seçin</option>
+                <option value="stai">stai (tu)</option>
+                <option value="sta">sta (Lei)</option>
+            </select>
+            <select id="q1_3" style="margin-top:5px;">
+                <option value="">Hitap şeklini seçin</option>
+                <option value="tu">tu</option>
+                <option value="Lei">Lei</option>
+            </select>
+        </div>
+
+        <div class="question-group">
+            <label>Aşağıdakilerden hangisi "akşam" selamlaşmasıdır?</label>
+            <select id="q1_4">
+                <option value="">Seçiniz</option>
+                <option value="buongiorno">Buongiorno</option>
+                <option value="buonasera">Buonasera</option>
+                <option value="notte">Buonanotte</option>
+            </select>
+        </div>
+        
+        <button class="btn-check" onclick="checkSaluti()">Kontrol Et (Controlla)</button>
+        <div id="fb1" class="feedback"></div>
+    </div>
+
+    <div class="module">
+        <h2>2. I Verbi (Fiiller)</h2>
+        <div class="info-box">
+            <strong>Essere:</strong> (io) sono, (tu) sei, (lui/lei) è<br>
+            <strong>Stare:</strong> (io) sto, (tu) stai, (lui/lei) sta<br>
+            <strong>Abitare:</strong> (io) abito, (tu) abiti, (lui/lei) abita
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Zamir (Pronome)</th>
+                        <th>Essere (Olmak)</th>
+                        <th>Stare (Durum)</th>
+                        <th>Abitare (Yaşamak)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Io</strong></td>
+                        <td><input type="text" id="v1" placeholder="sono"></td>
+                        <td><input type="text" id="v2" placeholder="sto"></td>
+                        <td><input type="text" id="v3" placeholder="abito"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tu</strong></td>
+                        <td><input type="text" id="v4" placeholder="sei"></td>
+                        <td>stai</td>
+                        <td><input type="text" id="v5" placeholder="abiti"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lui / Lei / Lei</strong></td>
+                        <td>è</td>
+                        <td>sta</td>
+                        <td><input type="text" id="v6" placeholder="abita"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn-check" onclick="checkVerbi()">Kontrol Et (Controlla)</button>
+        <div id="fb2" class="feedback"></div>
+    </div>
+
+    <div class="module">
+        <h2>3. Presentazioni (Tanıtma)</h2>
+        <div class="info-box">
+            <strong>Kural:</strong> Birini unvanıyla tanıtırken (Le presento...) <em>il, la, l'</em> artikeli kullanılır.
+            Sesli harfle başlayan mesleklerde (Avvocato, Architetto) <strong>l'</strong> kullanılır.
+        </div>
+
+        <div class="biz-card-container">
+            <div class="biz-card">
+                <h4>Francesca Capano</h4>
+                <p>Architetto - Napoli</p>
+            </div>
+            <div class="biz-card">
+                <h4>Ing. Raffaele Verde</h4>
+                <p>Viale Gramsci, 51</p>
+            </div>
+            <div class="biz-card">
+                <h4>Dott.ssa Luisa Lubrano</h4>
+                <p>Napoli</p>
+            </div>
+        </div>
+
+        <div class="question-group" style="margin-top:20px;">
+            <label>1. Signor Rossi, Le presento (Architetto Capano)...</label>
+            <select id="art1">
+                <option value="">Artikel seç</option>
+                <option value="il">il</option>
+                <option value="la">la</option>
+                <option value="l'">l'</option>
+            </select>
+        </div>
+
+        <div class="question-group">
+            <label>2. Francesca, questo è (Ingegner Verde)...</label>
+            <select id="art2">
+                <option value="">Artikel seç</option>
+                <option value="il">il</option>
+                <option value="la">la</option>
+                <option value="l'">l'</option>
+            </select>
+        </div>
+
+        <div class="question-group">
+            <label>3. Buongiorno, sono (Dottoressa Lubrano)...</label>
+            <select id="art3">
+                <option value="">Artikel seç</option>
+                <option value="il">il</option>
+                <option value="la">la</option>
+                <option value="l'">l'</option>
+            </select>
+        </div>
+        
+        <button class="btn-check" onclick="checkArticoli()">Kontrol Et (Controlla)</button>
+        <div id="fb3" class="feedback"></div>
+    </div>
+
+    <div class="module">
+        <h2>4. Di dove sei? (Nerelisin?)</h2>
+        <div class="info-box">
+            <strong>Di:</strong> Köken (Şehir) -> <em>Sono di Roma.</em><br>
+            <strong>A:</strong> İkamet (Şehir) -> <em>Abito a Milano.</em><br>
+            <strong>In:</strong> İkamet (Ülke) -> <em>Abito in Italia.</em>
+        </div>
+
+        <div class="question-group">
+            <label>1. Margherita è ________ Terni (Köken).</label>
+            <input type="text" id="prep1" placeholder="di / a / in">
+        </div>
+        <div class="question-group">
+            <label>2. L'ingegnere abita ________ Firenze (Şehirde yaşamak).</label>
+            <input type="text" id="prep2" placeholder="di / a / in">
+        </div>
+        <div class="question-group">
+            <label>3. Mauro abita ________ Svizzera (Ülkede yaşamak).</label>
+            <input type="text" id="prep3" placeholder="di / a / in">
+        </div>
+        
+        <button class="btn-check" onclick="checkGeo()">Kontrol Et (Controlla)</button>
+        <div id="fb4" class="feedback"></div>
+    </div>
+
+    <div class="module">
+        <h2>5. Amici.net (Okuma & Milliyetler)</h2>
+        <div class="info-box" style="background: #fff3e0; border-color: #ffe0b2;">
+            <p><strong>Chat Mesajları:</strong></p>
+            <ul style="padding-left:20px; margin:0;">
+                <li><strong>Greet:</strong> "Sono Greet, sono olandese, di Rotterdam."</li>
+                <li><strong>David:</strong> "Sono David, sono inglese, di Liverpool."</li>
+                <li><strong>Mauro:</strong> "Sono Mauro, abito in Svizzera ma sono italiano."</li>
+                <li><strong>Laura:</strong> "Sono Laura, abito a Milano ma sono tedesca."</li>
+            </ul>
+        </div>
+
+        <div class="question-group">
+            <label>Metne göre milliyetleri yazın (Dikkat: Erkek/Kadın uyumu):</label>
+            <br><br>
+            <label>1. Greet (Kadın) è ________________.</label>
+            <input type="text" id="nat1" placeholder="Milliyet">
+            
+            <label>2. David (Erkek) è ________________.</label>
+            <input type="text" id="nat2" placeholder="Milliyet">
+            
+            <label>3. Isabel (İspanya - Kadın) è ________________ (Spagnolo kelimesini uyarlayın).</label>
+            <input type="text" id="nat3" placeholder="Milliyet">
+        </div>
+        
+        <button class="btn-check" onclick="checkNat()">Kontrol Et (Controlla)</button>
+        <div id="fb5" class="feedback"></div>
+    </div>
+
+    <div class="module">
+        <h2>6. Pronuncia (Telaffuz)</h2>
+        <div class="info-box">
+            <strong>Kural:</strong> <br>
+            <strong>Sert Sesler (K/G):</strong> ca, co, cu, chi, che | ga, go, gu, ghi, ghe<br>
+            <strong>Yumuşak Sesler (Ç/C):</strong> ci, ce | gi, ge
+        </div>
+
+        <p>Aşağıdaki kelimelerin okunuş grubunu seçin:</p>
+
+        <div class="question-group">
+            <label>1. <strong>Ghirlanda</strong></label>
+            <select id="pr1">
+                <option value="">Seçiniz</option>
+                <option value="hard">Sert (Gat-to gibi)</option>
+                <option value="soft">Yumuşak (Ge-lato gibi)</option>
+            </select>
+        </div>
+
+        <div class="question-group">
+            <label>2. <strong>Giubileo</strong></label>
+            <select id="pr2">
+                <option value="">Seçiniz</option>
+                <option value="hard">Sert</option>
+                <option value="soft">Yumuşak (Cü-bileo)</option>
+            </select>
+        </div>
+
+        <div class="question-group">
+            <label>3. <strong>Chianti</strong></label>
+            <select id="pr3">
+                <option value="">Seçiniz</option>
+                <option value="hard">Sert (Ki-anti)</option>
+                <option value="soft">Yumuşak</option>
+            </select>
+        </div>
+        
+        <div class="question-group">
+            <label>4. <strong>Acciuga</strong></label>
+            <select id="pr4">
+                <option value="">Seçiniz</option>
+                <option value="hard">Sert</option>
+                <option value="soft">Yumuşak (A-çu-ga)</option>
+            </select>
+        </div>
+
+        <button class="btn-check" onclick="checkPron()">Kontrol Et (Controlla)</button>
+        <div id="fb6" class="feedback"></div>
+    </div>
+
+</div>
+
+<script>
+    // Basit metin temizleme fonksiyonu
+    function clean(str) {
+        return str.toString().toLowerCase().trim();
+    }
+
+    // Feedback gösterme fonksiyonu
+    function showResult(elementId, isCorrect, successMsg, errorMsg) {
+        const box = document.getElementById(elementId);
+        box.style.display = 'block';
+        if (isCorrect) {
+            box.className = 'feedback success';
+            box.innerHTML = "<strong>Molto bene!</strong> " + successMsg;
+        } else {
+            box.className = 'feedback error';
+            box.innerHTML = "<strong>Attenzione:</strong> " + errorMsg;
+        }
+    }
+
+    // 1. Selamlaşma Kontrol
+    function checkSaluti() {
+        const q1 = clean(document.getElementById('q1_1').value);
+        const q2 = document.getElementById('q1_2').value;
+        const q3 = document.getElementById('q1_3').value;
+        const q4 = document.getElementById('q1_4').value;
+
+        let correct = true;
+        if (!['bene', 'benissimo', 'abbastanza bene'].includes(q1)) correct = false;
+        if (q2 !== 'sta') correct = false;
+        if (q3 !== 'Lei') correct = false;
+        if (q4 !== 'buonasera') correct = false;
+
+        showResult('fb1', correct, 
+            "Tüm selamlaşma kalıpları doğru.", 
+            "Cevap: Bene / sta / Lei / Buonasera.");
+    }
+
+    // 2. Fiiller Kontrol
+    function checkVerbi() {
+        const v1 = clean(document.getElementById('v1').value); // sono
+        const v2 = clean(document.getElementById('v2').value); // sto
+        const v3 = clean(document.getElementById('v3').value); // abito
+        const v4 = clean(document.getElementById('v4').value); // sei
+        const v5 = clean(document.getElementById('v5').value); // abiti
+        const v6 = clean(document.getElementById('v6').value); // abita
+
+        let correct = (v1==='sono' && v2==='sto' && v3==='abito' && v4==='sei' && v5==='abiti' && v6==='abita');
+        showResult('fb2', correct, "Fiil çekimleri harika!", "Tabloyu kontrol et: sono, sto, abito, sei, abiti, abita.");
+    }
+
+    // 3. Artikeller Kontrol
+    function checkArticoli() {
+        const a1 = document.getElementById('art1').value; // l'
+        const a2 = document.getElementById('art2').value; // l'
+        const a3 = document.getElementById('art3').value; // la
+
+        let correct = (a1==="l'" && a2==="l'" && a3==="la");
+        showResult('fb3', correct, 
+            "Kuralları anlamışsın. (Sesli harf = L')", 
+            "Hata: Architetto ve Ingegner sesli ile başlar (l'). Dottoressa sessiz ile başlar (la).");
+    }
+
+    // 4. Coğrafya Kontrol
+    function checkGeo() {
+        const p1 = clean(document.getElementById('prep1').value); // di
+        const p2 = clean(document.getElementById('prep2').value); // a
+        const p3 = clean(document.getElementById('prep3').value); // in
+
+        let correct = (p1==='di' && p2==='a' && p3==='in');
+        showResult('fb4', correct, "Edatlar doğru.", "Unutma: Köken = di, Şehirde = a, Ülkede = in.");
+    }
+
+    // 5. Milliyetler Kontrol
+    function checkNat() {
+        const n1 = clean(document.getElementById('nat1').value); // olandese
+        const n2 = clean(document.getElementById('nat2').value); // inglese
+        const n3 = clean(document.getElementById('nat3').value); // spagnola
+
+        let correct = (n1==='olandese' && n2==='inglese' && n3==='spagnola');
+        showResult('fb5', correct, "Milliyet uyumları doğru.", "Cevaplar: olandese (değişmez), inglese (değişmez), spagnola (kadın).");
+    }
+
+    // 6. Telaffuz Kontrol
+    function checkPron() {
+        const p1 = document.getElementById('pr1').value; // hard
+        const p2 = document.getElementById('pr2').value; // soft
+        const p3 = document.getElementById('pr3').value; // hard
+        const p4 = document.getElementById('pr4').value; // soft
+
+        let correct = (p1==='hard' && p2==='soft' && p3==='hard' && p4==='soft');
+        showResult('fb6', correct, "Telaffuz kuralları mükemmel.", "GH ve CH serttir. GI ve CI yumuşaktır.");
+    }
+</script>
+
+</body>
+</html>
