@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C'è o Ci sono? - Trova le Differenze</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #27ae60;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 1.6rem; }
+        p { margin-top: 5px; opacity: 0.9; }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 5px solid #27ae60;
+        }
+
+        .question {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            color: #555;
+        }
+
+        .options button:hover {
+            background-color: #f0f9f4;
+            border-color: #27ae60;
+        }
+
+        .options button.correct {
+            background-color: #d4efdf !important;
+            border-color: #27ae60 !important;
+            color: #0e6655 !important;
+            font-weight: bold;
+        }
+
+        .options button.wrong {
+            background-color: #fadbd8 !important;
+            border-color: #e74c3c !important;
+            color: #922b21 !important;
+            opacity: 0.6;
+        }
+
+        #score-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🔎 C'è o Ci sono?</h1>
+    <p>Guarda le immagini A e B e trova le differenze.</p>
+</header>
+
+<div class="container" id="quiz-container">
+    </div>
+
+<div id="score-panel">Punti: <span id="score">0</span> / 12</div>
+
+<script>
+    const questions = [
+        {
+            text: "1. Nell'immagine A:",
+            options: ["C'è un camino.", "Ci sono due camini.", "Non c'è il camino."],
+            ans: 0
+        },
+        {
+            text: "2. Sulla poltrona dell'immagine A:",
+            options: ["C'è un cane che dorme.", "C'è un gatto che dorme.", "Ci sono dei libri."],
+            ans: 1
+        },
+        {
+            text: "3. Nell'immagine B, sulla parete:",
+            options: ["C'è una televisione nera.", "Ci sono due televisioni.", "C'è un grande specchio."],
+            ans: 0
+        },
+        {
+            text: "4. Al centro della stanza nell'immagine A:",
+            options: ["C'è un tavolino rotondo.", "C'è un tavolino quadrato.", "Ci sono due tavolini."],
+            ans: 1
+        },
+        {
+            text: "5. Sul divano dell'immagine B:",
+            options: ["Ci sono dei cuscini gialli.", "C'è un cuscino bianco.", "Non ci sono cuscini."],
+            ans: 0
+        },
+        {
+            text: "6. Nell'immagine A, vicino alla finestra:",
+            options: ["C'è una libreria alta con i libri.", "C'è una libreria bassa senza libri.", "Ci sono due librerie."],
+            ans: 0
+        },
+        {
+            text: "7. Nell'immagine B, sopra il mobile basso:",
+            options: ["C'è un solo quadro grande.", "Ci sono due piccoli quadri.", "Non c'è nessun quadro."],
+            ans: 1
+        },
+        {
+            text: "8. In tutte e due le immagini:",
+            options: ["C'è una sola finestra.", "Ci sono due finestre.", "Non ci sono finestre."],
+            ans: 1
+        },
+        {
+            text: "9. Dietro la poltrona nell'immagine B:",
+            options: ["C'è una pianta verde.", "Ci sono due piante.", "C'è una lampada rossa."],
+            ans: 0
+        },
+        {
+            text: "10. Sopra il camino nell'immagine A:",
+            options: ["C'è un vaso di fiori.", "Ci sono due gatti.", "C'è la televisione."],
+            ans: 0
+        },
+        {
+            text: "11. Nella stanza dell'immagine B:",
+            options: ["C'è un divano blu.", "Ci sono due divani blu.", "C'è un divano rosso."],
+            ans: 0
+        },
+        {
+            text: "12. Sul pavimento, in entrambe le foto:",
+            options: ["C'è un tappeto verde.", "Ci sono due tappeti rossi.", "Non c'è il tappeto."],
+            ans: 0
+        }
+    ];
+
+    const container = document.getElementById('quiz-container');
+    const scorePanel = document.getElementById('score-panel');
+    const scoreSpan = document.getElementById('score');
+    let currentScore = 0;
+
+    // Generazione Quiz
+    questions.forEach((q, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        let buttonsHTML = '';
+        q.options.forEach((opt, i) => {
+            buttonsHTML += `<button onclick="checkAnswer(this, ${index}, ${i})">${opt}</button>`;
+        });
+
+        card.innerHTML = `
+            <div class="question">${q.text}</div>
+            <div class="options" id="opt-container-${index}">
+                ${buttonsHTML}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    scorePanel.style.display = 'block';
+
+    function checkAnswer(btn, qIndex, optIndex) {
+        const correctIndex = questions[qIndex].ans;
+        const parent = document.getElementById(`opt-container-${qIndex}`);
+        const allBtns = parent.querySelectorAll('button');
+
+        // Disabilita click successivi
+        allBtns.forEach(b => b.disabled = true);
+
+        if (optIndex === correctIndex) {
+            btn.classList.add('correct');
+            currentScore++;
+            scoreSpan.textContent = currentScore;
+        } else {
+            btn.classList.add('wrong');
+            // Mostra quella giusta
+            allBtns[correctIndex].classList.add('correct');
+        }
+    }
+</script>
+
+</body>
+</html>
