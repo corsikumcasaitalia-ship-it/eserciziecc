@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>İtalyanca Ders Notları: C'è & Ci sono</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #4338ca;
+            --highlight: #D946EF;
+            --primary-light: #EEF2FF;
+            --text-dark: #1F2937;
+            --text-gray: #6B7280;
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --success: #10B981;
+            --error: #EF4444;
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 15px;
+            padding-bottom: 50px; 
+            line-height: 1.5;
+        }
+
+        .container { max-width: 650px; margin: 0 auto; }
+
+        header { text-align: center; margin-bottom: 25px; }
+        
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            color: #111827;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .subtitle { color: var(--text-gray); font-size: 0.95rem; font-weight: 500; }
+
+        /* GÜNCELLENMİŞ KART TASARIMI - MOBİL İÇİN DÜZELTİLDİ */
+        .topic-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255,255,255,0.7);
+            
+            /* DÜZELTME KODLARI BURADA */
+            overflow: visible !important;    
+            height: auto !important;         
+            padding-bottom: 30px !important; 
+            display: block !important;       
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+            font-weight: 700;
+        }
+
+        /* TABLO STİLLERİ */
+        .table-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .sub-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .rule-text { margin-bottom: 15px; font-size: 0.95rem; color: #4B5563; }
+        .center-text { text-align: center; }
+        .it-instr { display: block; font-weight: 600; color: #111827; }
+        .tr-expl { display: block; font-size: 0.9em; color: #6B7280; font-style: italic; }
+
+        /* FİİL ÇEKİM TABLOSU */
+        .conjugation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px;
+            background: #F8FAFC;
+            padding: 12px;
+            /* Alt kısım kesilmesin diye ek boşluk */
+            padding-bottom: 20px !important; 
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .conj-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 12px 5px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            min-height: 75px; 
+        }
+
+        .pronoun {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .verb-form {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.15rem;
+            white-space: nowrap; 
+        }
+        
+        .highlight-verb {
+            color: var(--highlight);
+            font-weight: 800;
+            font-size: 1.3rem;
+        }
+
+        /* DİĞER BİLEŞENLER */
+        .example-list { display: flex; flex-direction: column; gap: 10px; }
+        .example-item {
+            background-color: #F9FAFB;
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            padding: 12px 15px;
+        }
+        .it { display: block; font-weight: 600; color: #111827; font-size: 1rem; margin-bottom: 4px; }
+        .tr { display: block; font-size: 0.9rem; color: #6B7280; }
+
+        /* QUIZ STİLLERİ */
+        .quiz-grid { display: flex; flex-direction: column; gap: 10px; }
+        @media (min-width: 600px) {
+            .quiz-grid.two-col { display: grid; grid-template-columns: 1fr 1fr; }
+        }
+        
+        .quiz-item {
+            background: #F9FAFB;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #374151;
+        }
+        
+        .quiz-input {
+            border: none;
+            border-bottom: 2px solid #D1D5DB;
+            background: transparent;
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1rem;
+            outline: none;
+            padding: 0 5px;
+            font-family: 'Inter', sans-serif;
+            min-width: 40px;
+        }
+        select.quiz-input {
+            background-color: #EEF2FF;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+        .quiz-input:focus { border-bottom-color: var(--primary); }
+
+        .action-btn {
+            background: linear-gradient(135deg, #4F46E5 0%, #4338ca 100%);
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            margin-top: 25px;
+        }
+
+        /* --- YENİ EŞLEŞTİRME OYUNU STİLLERİ --- */
+
+        /* A Bölümü: Kelime Bankası */
+        .bank-container {
+            background: #eef2ff;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px dashed #a5b4fc;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            min-height: 100px;
+            align-content: flex-start;
+        }
+
+        .word-item {
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 5px 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .word-item.selected {
+            border-color: var(--primary);
+            background-color: #e0e7ff;
+            transform: scale(1.02);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .grammar-select {
+            padding: 4px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: #f9fafb;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* B Bölümü: Hedef Cümleler */
+        .target-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .target-row {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            min-height: 50px;
+        }
+
+        .target-text {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .drop-zone {
+            flex-grow: 1;
+            min-width: 150px;
+            height: 45px;
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            transition: background 0.3s;
+        }
+
+        .drop-zone.highlight {
+            background: #dbeafe;
+            border-color: var(--primary);
+        }
+
+        .drop-zone .word-item {
+            width: 100%;
+            border: none;
+            box-shadow: none;
+            background: transparent;
+            padding: 0;
+        }
+
+        .reset-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            cursor: pointer;
+            float: right;
+        }
+
+        /* FLIP CARDS */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 25px; }
+        .flip-card { background: transparent; width: 100%; height: 220px; perspective: 1000px; cursor: pointer; }
+        .flip-card-inner {
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.6s; transform-style: preserve-3d;
+            border-radius: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back {
+            position: absolute; width: 100%; height: 100%;
+            -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            border-radius: 20px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 15px;
+        }
+        .flip-card-front { background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); color: white; }
+        .fun-card .flip-card-front { background: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%); }
+        .flip-card-back { background: white; color: var(--text-dark); transform: rotateY(180deg); border: 2px solid var(--primary-light); }
+        .card-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .card-label { font-weight: 600; font-size: 1.1rem; line-height: 1.2; }
+        .back-title { color: var(--primary); font-weight: 700; font-size: 0.95rem; text-transform: uppercase; }
+        .back-text { font-size: 0.9rem; margin-bottom: 8px; }
+        .back-ex { font-style: italic; background: #F3F4F6; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <header>
+        <h1>C'è & Ci sono</h1>
+        <div class="subtitle">Italiano A1</div>
+    </header>
+
+    <div class="topic-card">
+        <div class="table-title">Il Verbo Esserci</div>
+        <div class="sub-title">Presente Indicativo</div>
+        <p class="rule-text center-text">
+            İtalyancada varlık bildirmek için kullanılan <em>esserci</em> fiilinin çekimi.
+        </p>
+
+        <div class="conjugation-grid">
+            <div class="conj-item"><span class="pronoun">io</span><span class="verb-form">ci sono</span></div>
+            <div class="conj-item"><span class="pronoun">noi</span><span class="verb-form">ci siamo</span></div>
+            
+            <div class="conj-item"><span class="pronoun">tu</span><span class="verb-form">ci sei</span></div>
+            <div class="conj-item"><span class="pronoun">voi</span><span class="verb-form">ci siete</span></div>
+            
+            <div class="conj-item"><span class="pronoun">lui/lei</span><span class="verb-form highlight-verb">c'è</span></div>
+            <div class="conj-item"><span class="pronoun">loro</span><span class="verb-form highlight-verb">ci sono</span></div>
+        </div>
+    </div>
+
+    <div class="topic-card">
+        <div class="section-title"><span class="section-badge">•</span>Uso (Kullanım)</div>
+        <p class="rule-text"><span class="it-instr">Si usa 'esserci' per indicare la presenza.</span><span class="tr-expl">Varlığı belirtmek için kullanılır.</span></p>
+        <div class="example-list">
+            <div class="example-item"><span class="it">C'è una lettera per te.</span><span class="tr">Senin için bir mektup var.</span></div>
+            <div class="example-item"><span class="it">C'è poco tempo.</span><span class="tr">Az zaman var.</span></div>
+            <div class="example-item"><span class="it">C'è molto tempo!</span><span class="tr">Çok zaman var!</span></div>
+            <div class="example-item"><span class="it">C'è un problema.</span><span class="tr">Bir sorun var.</span></div>
+            <div class="example-item"><span class="it">Ci sono due ingressi.</span><span class="tr">İki giriş var.</span></div>
+            <div class="example-item"><span class="it">Nel negozio ci sono molti clienti.</span><span class="tr">Dükkanda çok müşteri var.</span></div>
+        </div>
+    </div>
+
+    <div class="topic-card">
+        <div class="section-title"><span class="section-badge">•</span>Vurgu (Accento)</div>
+        <p class="rule-text"><span class="it-instr">Non sono solitamente enfatici.</span><span class="tr-expl">Not: C'è ve ci sono ifadeleri konuşma dilinde vurgulu söylenmez. Ses tonu (vurgu) kendisinden sonra gelen ismin üzerindedir.</span></p>
+        <div class="example-list">
+            <div class="example-item"><span class="it">C'è Luisa al telefono.</span><span class="tr">Telefonda Luisa var.</span></div>
+            <div class="example-item"><span class="it">Ci sono i tuoi amici che ti aspettano.</span><span class="tr">Seni bekleyen arkadaşların var.</span></div>
+        </div>
+    </div>
+
+    <div class="topic-card">
+        <div class="section-title"><span class="section-badge">•</span>Soru & Olumsuzluk</div>
+        <div class="example-list">
+            <div class="example-item"><span class="it">C'è il Professor Gatti?</span><span class="tr">Profesör Gatti orada mı?</span></div>
+            <div class="example-item"><span class="it">Quanti ingressi ci sono?</span><span class="tr">Kaç tane giriş var?</span></div>
+            <div class="example-item"><span class="it">Non c'è tempo.</span><span class="tr">Zaman yok.</span></div>
+            <div class="example-item"><span class="it">Non ci sono clienti.</span><span class="tr">Hiç müşteri yok.</span></div>
+            <div class="example-item"><span class="it">Non c'è nessuno.</span><span class="tr">Kimse yok.</span></div>
+        </div>
+    </div>
+
+    <div class="topic-card">
+        <div class="section-title">✏️ Esercizi 1 (Alıştırmalar)</div>
+        <div class="sub-title" style="text-align:left; margin-top:20px; font-size:1.1rem;">1. C'è o ci sono? (Seçiniz)</div>
+        <div class="quiz-grid two-col">
+            <div class="quiz-item">1. Nel nord Italia <select class="quiz-input" data-ans="ci sono"><option value="">...</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select> le Alpi.</div>
+            <div class="quiz-item">2. Vicino Roma <select class="quiz-input" data-ans="c'è"><option value="">...</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select> il mare.</div>
+            <div class="quiz-item">3. A Milano <select class="quiz-input" data-ans="c'è"><option value="">...</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select> la nebbia.</div>
+            <div class="quiz-item">4. A Venezia <select class="quiz-input" data-ans="ci sono"><option value="">...</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select> i canali.</div>
+            <div class="quiz-item">5. In Puglia non <select class="quiz-input" data-ans="ci sono"><option value="">...</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select> montagne.</div>
+            <div class="quiz-item">6. In Emilia Romagna <select class="quiz-input" data-ans="c'è"><option value="">...</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select> la pianura padana.</div>
+            <div class="quiz-item">7. In Umbria non <select class="quiz-input" data-ans="c'è"><option value="">...</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select> il mare.</div>
+            <div class="quiz-item">8. In Italia <select class="quiz-input" data-ans="ci sono"><option value="">...</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select> molte isole.</div>
+        </div>
+        <button class="action-btn" onclick="checkAnswers()">Controlla (Kontrol Et)</button>
+    </div>
+
+    <div class="topic-card">
+        <div class="section-title">✏️ Esercizi 2: Eşleştirme</div>
+        
+        <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">
+            <strong>Adım 1:</strong> Kutudaki ifadenin başına uygun olanı (c'è / ci sono) seçin.<br>
+            <strong>Adım 2:</strong> Tamamladığınız kutuya tıklayın ve aşağıda ait olduğu cümleyi seçin.
+        </p>
+    
+        <button class="reset-btn" onclick="resetMatching()">Sıfırla ↺</button>
+        <div style="clear:both;"></div>
+    
+        <div class="bank-container" id="wordBank">
+            
+            <div class="word-item" id="w1" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>un deserto molto grande</span>
+            </div>
+    
+            <div class="word-item" id="w2" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>molti esercizi</span>
+            </div>
+    
+            <div class="word-item" id="w3" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>la lavagna</span>
+            </div>
+    
+            <div class="word-item" id="w4" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>i treni</span>
+            </div>
+    
+            <div class="word-item" id="w5" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>molte sedie</span>
+            </div>
+            
+            <div class="word-item" id="w6" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>lo specchio</span>
+            </div>
+    
+            <div class="word-item" id="w7" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>molte città antiche</span>
+            </div>
+    
+            <div class="word-item" id="w8" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>una torre molto famosa</span>
+            </div>
+    
+            <div class="word-item" id="w9" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>i canguri</span>
+            </div>
+    
+            <div class="word-item" id="w10" onclick="selectWord(this)">
+                <select class="grammar-select"><option>?</option><option value="c'è">c'è</option><option value="ci sono">ci sono</option></select>
+                <span>una città molto grande, Londra</span>
+            </div>
+    
+        </div>
+    
+        <div class="target-list">
+            
+            <div class="target-row">
+                <span class="target-text">1. Al ristorante</span>
+                <div class="drop-zone" data-correct-id="w5" data-correct-verb="ci sono" onclick="placeWord(this)"></div>
+            </div>
+    
+            <div class="target-row">
+                <span class="target-text">2. In Italia</span>
+                <div class="drop-zone" data-correct-id="w7" data-correct-verb="ci sono" onclick="placeWord(this)"></div>
+            </div>
+    
+            <div class="target-row">
+                <span class="target-text">3. In Inghilterra</span>
+                <div class="drop-zone" data-correct-id="w10" data-correct-verb="c'è" onclick="placeWord(this)"></div>
+            </div>
+    
+            <div class="target-row">
+                <span class="target-text">4. In Africa</span>
+                <div class="drop-zone" data-correct-id="w1" data-correct-verb="c'è" onclick="placeWord(this)"></div>
+            </div>
+    
+            <div class="target-row">
+                <span class="target-text">5. In classe</span>
+                <div class="drop-zone" data-correct-id="w3" data-correct-verb="c'è" onclick="placeWord(this)"></div>
+            </div>
+            
+            <div class="target-row">
+                <span class="target-text">6. In bagno</span>
+                <div class="drop-zone" data-correct-id="w6" data-correct-verb="c'è" onclick="placeWord(this)"></div>
+            </div>
+            
+             <div class="target-row">
+                <span class="target-text">7. In Australia</span>
+                <div class="drop-zone" data-correct-id="w9" data-correct-verb="ci sono" onclick="placeWord(this)"></div>
+            </div>
+            
+             <div class="target-row">
+                <span class="target-text">8. In stazione</span>
+                <div class="drop-zone" data-correct-id="w4" data-correct-verb="ci sono" onclick="placeWord(this)"></div>
+            </div>
+            
+             <div class="target-row">
+                <span class="target-text">9. In questo libro</span>
+                <div class="drop-zone" data-correct-id="w2" data-correct-verb="ci sono" onclick="placeWord(this)"></div>
+            </div>
+            
+             <div class="target-row">
+                <span class="target-text">10. A Parigi</span>
+                <div class="drop-zone" data-correct-id="w8" data-correct-verb="c'è" onclick="placeWord(this)"></div>
+            </div>
+    
+        </div>
+        
+        <button class="action-btn" onclick="checkMatchAnswers()">Controlla (Kontrol Et)</button>
+        <div id="match-result" style="text-align:center; margin-top:10px; font-weight:bold;"></div>
+    </div>
+
+
+    <div class="topic-card">
+        <div class="section-title">✏️ Esercizi 3 (Tamamlayın)</div>
+        <div class="sub-title" style="text-align:left; margin-top:30px; font-size:1.1rem;">è, sono, c'è, ci sono</div>
+        <p style="font-size:0.9em; color:#666; margin-bottom:10px;">Boşlukları uygun fiille doldurunuz.</p>
+        
+        <div class="quiz-grid"> 
+            <div class="quiz-item">
+                1. Sul listino del bar <input type="text" class="quiz-input" data-ans="ci sono" placeholder="..." style="width:80px"> molte bevande, alcune <input type="text" class="quiz-input" data-ans="sono" placeholder="..." style="width:60px"> abbastanza care.
+            </div>
+            <div class="quiz-item">
+                2. Capri <input type="text" class="quiz-input" data-ans="è" placeholder="..."> un'isola italiana dove <input type="text" class="quiz-input" data-ans="ci sono" placeholder="..." style="width:80px"> sempre molti turisti.
+            </div>
+            <div class="quiz-item">
+                3. Nella classe di Giuliana <input type="text" class="quiz-input" data-ans="c'è" placeholder="..."> una ragazza tedesca. Si chiama Isabel e <input type="text" class="quiz-input" data-ans="è" placeholder="..."> di Berlino.
+            </div>
+            <div class="quiz-item">
+                4. Le feste di Chiara <input type="text" class="quiz-input" data-ans="sono" placeholder="..." style="width:60px"> sempre molto belle: <input type="text" class="quiz-input" data-ans="c'è" placeholder="..."> buona musica, <input type="text" class="quiz-input" data-ans="ci sono" placeholder="..." style="width:80px"> molte cose da mangiare e da bere.
+            </div>
+        </div>
+
+        <button class="action-btn" onclick="checkAnswers()">Controlla (Kontrol Et)</button>
+    </div>
+
+    <h2 style="font-family: 'Poppins'; font-size: 1.2rem; text-align: center; color:#1F2937; margin-top:40px;">Hızlı Kartlar</h2>
+    <div class="cards-grid">
+        <div class="flip-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front"><div class="card-icon">☝️</div><div class="card-label">C'È</div></div>
+                <div class="flip-card-back"><div class="back-title">Kullanım</div><div class="back-text">Tekil nesneler için.</div><div class="back-ex">"C'è un problema." </div>Bir problem var.</div>
+            </div>
+        </div>
+        <div class="flip-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front"><div class="card-icon">✌️</div><div class="card-label">CI SONO</div></div>
+                <div class="flip-card-back"><div class="back-title">Kullanım</div><div class="back-text">Çoğul nesneler için.</div><div class="back-ex">"Ci sono due gatti. "</div> İki kedi var.🐱</div>
+            </div>
+        </div>
+        <div class="flip-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front"><div class="card-icon">⛔</div><div class="card-label">NON</div></div>
+                <div class="flip-card-back"><div class="back-title">Yapı</div><div class="back-text">Fiilin önüne gelir.</div><div class="back-ex">"Non c'è tempo." </div>Zaman yok.</div>
+            </div>
+        </div>
+        <div class="flip-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front"><div class="card-icon">🤫</div><div class="card-label">NESSUNO</div></div>
+                <div class="flip-card-back"><div class="back-title">Çifte Negatif</div><div class="back-text">İtalyancada 2 negatif kullanılır.</div><div class="back-ex">"Non c'è nessuno."</div> Hiç kimse yok.</div>
+            </div>
+        </div>
+        <div class="flip-card fun-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front"><div class="card-icon">🤷‍♂️</div><div class="card-label">CHE C'È?</div></div>
+                <div class="flip-card-back"><div class="back-title">Ne var?</div><div class="back-text">"Sorun ne?" anlamında.</div><div class="back-ex">"Ehi, che c'è?"</div></div>
+            </div>
+        </div>
+        <div class="flip-card fun-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front"><div class="card-icon">👀</div><div class="card-label">CI SEI?</div></div>
+                <div class="flip-card-back"><div class="back-title">Orada mısın?</div><div class="back-text">"Anladın mı?" anlamında.</div><div class="back-ex">"Allora, ci sei?"</div></div>
+            </div>
+        </div>
+        <div class="flip-card fun-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front"><div class="card-icon">📅</div><div class="card-label">CI SARÒ</div></div>
+                <div class="flip-card-back"><div class="back-title">Orada Olacağım</div><div class="back-text">Gelecek zaman sözü.</div><div class="back-ex">"Alla festa ci sarò!"</div></div>
+            </div>
+        </div>
+        <div class="flip-card fun-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front"><div class="card-icon">🏁</div><div class="card-label">CI SIAMO!</div></div>
+                <div class="flip-card-back"><div class="back-title">Vardık / Tamam</div><div class="back-text">Hedefe ulaşınca.</div><div class="back-ex">"Eccoci, ci siamo!"</div></div>
+            </div>
+        </div>
+        <div class="flip-card fun-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front"><div class="card-icon">🏰</div><div class="card-label">C'ERA...</div></div>
+                <div class="flip-card-back"><div class="back-title">Bir zamanlar...</div><div class="back-text">Masal başlangıcı.</div><div class="back-ex">"C'era una volta..."</div></div>
+            </div>
+        </div>
+    </div>
+    
+    <div style="height: 120px;"></div>
+
+</div>
+
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playShlickSound() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const t = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        
+        osc.type = 'triangle'; 
+        osc.frequency.setValueAtTime(400, t); 
+        osc.frequency.exponentialRampToValueAtTime(100, t + 0.1);
+        
+        filter.type = 'lowpass'; 
+        filter.frequency.value = 800;
+        
+        gain.gain.setValueAtTime(0.05, t); 
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+        
+        osc.connect(filter); 
+        filter.connect(gain); 
+        gain.connect(audioCtx.destination);
+        
+        osc.start(); 
+        osc.stop(t + 0.1);
+    }
+    
+    function flipCard(card) { 
+        playShlickSound(); 
+        card.classList.toggle('flipped'); 
+    }
+    
+    function checkAnswers() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        
+        inputs.forEach(input => {
+            const val = input.value.trim().toLowerCase();
+            const ans = input.dataset.ans.toLowerCase();
+            
+            if(val === ans) { 
+                input.style.borderBottomColor = "var(--success)"; 
+                input.style.color = "var(--success)"; 
+                if(input.tagName === 'SELECT') input.style.backgroundColor = "#DCFCE7";
+            }
+            else { 
+                input.style.borderBottomColor = "var(--error)"; 
+                input.style.color = "var(--error)"; 
+                if(input.tagName === 'SELECT') input.style.backgroundColor = "#FEE2E2";
+            }
+        });
+    }
+
+    /* --- EŞLEŞTİRME OYUNU MANTIĞI --- */
+    let selectedItem = null;
+
+    function selectWord(element) {
+        // Eğer zaten bir yerdeyse geri bankaya yolla
+        if (element.parentElement.classList.contains('drop-zone')) {
+            document.getElementById('wordBank').appendChild(element);
+            element.classList.remove('selected');
+            selectedItem = null;
+            return;
+        }
+
+        // Diğerlerinin seçimini kaldır
+        document.querySelectorAll('.word-item').forEach(el => el.classList.remove('selected'));
+        
+        // Bunu seç
+        element.classList.add('selected');
+        selectedItem = element;
+        
+        // Hedefleri vurgula
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            if(zone.children.length === 0) zone.classList.add('highlight');
+        });
+    }
+
+    function placeWord(zone) {
+        if (!selectedItem) return;
+
+        if (zone.children.length > 0) {
+            let oldItem = zone.children[0];
+            document.getElementById('wordBank').appendChild(oldItem);
+        }
+
+        zone.appendChild(selectedItem);
+        selectedItem.classList.remove('selected');
+        selectedItem = null;
+        
+        document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('highlight'));
+    }
+
+    function resetMatching() {
+        const bank = document.getElementById('wordBank');
+        const items = document.querySelectorAll('.word-item');
+        items.forEach(item => bank.appendChild(item));
+        items.forEach(item => {
+            item.style.backgroundColor = "white";
+            item.querySelector('select').style.backgroundColor = "#f9fafb";
+        });
+        document.getElementById('match-result').innerText = "";
+    }
+
+    function checkMatchAnswers() {
+        let correct = 0;
+        let total = 10;
+        
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            const item = zone.children[0];
+            
+            if (item) {
+                const isCorrectPlace = zone.dataset.correctId === item.id;
+                const selectedVerb = item.querySelector('select').value;
+                const correctVerb = zone.dataset.correctVerb;
+                const isCorrectVerb = selectedVerb === correctVerb;
+
+                if (isCorrectPlace && isCorrectVerb) {
+                    correct++;
+                    item.style.backgroundColor = "#dcfce7";
+                    item.querySelector('select').style.backgroundColor = "#bbf7d0";
+                } else {
+                    item.style.backgroundColor = "#fee2e2";
+                    item.querySelector('select').style.backgroundColor = "#fecaca";
+                }
+            }
+        });
+
+        const resDiv = document.getElementById('match-result');
+        resDiv.innerText = `Sonuç: ${correct} / ${total} Doğru`;
+        resDiv.style.color = correct === total ? "var(--success)" : "var(--primary)";
+    }
+</script>
+
+</body>
+</html>
