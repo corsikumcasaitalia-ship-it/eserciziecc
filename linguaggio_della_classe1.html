@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicazione in Classe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 { 
+            text-align: center; 
+            font-family: 'Patrick Hand', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #d35400;
+        }
+
+        .aciklama {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .kart-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .kart {
+            background-color: transparent;
+            width: 160px;
+            height: 240px;
+            perspective: 1000px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .kart-ic {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            border-radius: 20px;
+        }
+
+        .kart.cevir .kart-ic {
+            transform: rotateY(180deg);
+        }
+
+        .kart-on, .kart-arka {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .kart-on {
+            background-color: #ffffff;
+            border: 1px solid #fff;
+        }
+
+        .resim-alani {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .kart-on img {
+            max-width: 100%;
+            max-height: 120px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        .italyanca-metin {
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-top: 10px;
+            line-height: 1.1;
+        }
+
+        .ses-ikonu {
+            font-size: 18px;
+            color: #3498db;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+
+        .kart-arka {
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            color: white;
+            transform: rotateY(180deg);
+            justify-content: center;
+        }
+
+        .kart-arka p {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Comunicazione in Classe</h1>
+    <div class="aciklama">Clicca sulla carta per ascoltare e vedere il significato.</div>
+
+    <div class="kart-container" id="kartAlani"></div>
+
+    <script>
+        // --- RESİM YOLLARI ---
+        // Resimler "img_linguaggio_della_classe" klasöründe aranıyor.
+        const kelimeListesi = [
+            { it: "Parlate", tr: "Konuşun", resim: "img_linguaggio_della_classe/resim1.jpg" },
+            { it: "Scrivete", tr: "Yazın", resim: "img_linguaggio_della_classe/resim2.jpg" },
+            { it: "Leggete", tr: "Okuyun", resim: "img_linguaggio_della_classe/resim3.jpg" },
+            { it: "Ascoltate", tr: "Dinleyin", resim: "img_linguaggio_della_classe/resim4.jpg" },
+            { it: "Chiedete e rispondete", tr: "Sorun ve cevaplayın", resim: "img_linguaggio_della_classe/resim5.jpg" },
+            { it: "Completate", tr: "Tamamlayın", resim: "img_linguaggio_della_classe/resim6.jpg" },
+            { it: "Segnate la risposta giusta", tr: "Doğru cevabı işaretleyin", resim: "img_linguaggio_della_classe/resim7.jpg" },
+            { it: "Abbinate", tr: "Eşleştirin", resim: "img_linguaggio_della_classe/resim8.jpg" },
+            { it: "Non capisco", tr: "Anlamıyorum", resim: "img_linguaggio_della_classe/resim9.jpg" },
+            { it: "Come si scrive?", tr: "Nasıl yazılır?", resim: "img_linguaggio_della_classe/resim10.jpg" },
+            { it: "Come si dice in italiano?", tr: "İtalyancada nasıl denir?", resim: "img_linguaggio_della_classe/resim11.jpg" },
+            { it: "Che cosa significa?", tr: "Ne anlama geliyor?", resim: "img_linguaggio_della_classe/resim12.jpg" },
+            { it: "Come si pronuncia?", tr: "Nasıl telaffuz edilir?", resim: "img_linguaggio_della_classe/resim13.jpg" },
+            { it: "Che cosa dobbiamo fare?", tr: "Ne yapmamız gerekiyor?", resim: "img_linguaggio_della_classe/resim14.jpg" },
+            { it: "Può ripetere, per favore?", tr: "Tekrar edebilir misiniz?", resim: "img_linguaggio_della_classe/resim15.jpg" }
+        ];
+
+        // --- SES AYARLARI ---
+        let italyancaSes = null;
+        function sesleriYukle() {
+            if (typeof window.speechSynthesis === 'undefined') return;
+            try {
+                const sesler = window.speechSynthesis.getVoices();
+                italyancaSes = sesler.find(ses => ses.lang === 'it-IT') || 
+                               sesler.find(ses => ses.lang.includes('it'));
+            } catch (e) {}
+        }
+        if (typeof window.speechSynthesis !== 'undefined' && window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = sesleriYukle;
+        }
+        sesleriYukle();
+
+        // --- KART OLUŞTURMA ---
+        const kartAlani = document.getElementById('kartAlani');
+        kelimeListesi.forEach(veri => {
+            kartAlani.innerHTML += `
+                <div class="kart" onclick="islemYap(this, '${veri.it}')">
+                    <div class="kart-ic">
+                        <div class="kart-on">
+                            <div class="resim-alani">
+                                <img src="${veri.resim}" alt="${veri.it}" onerror="this.style.display='none'">
+                            </div>
+                            <div class="italyanca-metin">${veri.it}</div>
+                            <div class="ses-ikonu">🔊</div>
+                        </div>
+                        <div class="kart-arka">
+                            <p>${veri.tr}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // --- TIKLAMA VE OKUMA ---
+        function islemYap(element, metin) {
+            element.classList.toggle('cevir');
+            if (typeof window.speechSynthesis !== 'undefined' && 'SpeechSynthesisUtterance' in window) {
+                speakText(metin);
+            }
+        }
+
+        function speakText(text) {
+            try {
+                window.speechSynthesis.cancel();
+                let msg = new SpeechSynthesisUtterance();
+                msg.text = text; msg.rate = 0.9;
+                if (italyancaSes) { msg.voice = italyancaSes; msg.lang = italyancaSes.lang; } else { msg.lang = 'it-IT'; }
+                window.speechSynthesis.speak(msg);
+            } catch (e) {}
+        }
+    </script>
+
+</body>
+</html>
