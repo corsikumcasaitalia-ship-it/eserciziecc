@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İtalyanca Ders: Passato Prossimo</title>
+    <style>
+        :root {
+            --primary: #008C45; /* İtalyan Yeşili */
+            --secondary: #CD212A; /* İtalyan Kırmızısı */
+            --accent: #F4F9F1; /* Kırık Beyaz */
+            --text: #333;
+            --light-blue: #e3f2fd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #006b35);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 1.8rem; }
+        h2 { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 5px; margin-top: 30px; }
+        h3 { font-size: 1.1rem; color: #555; margin-bottom: 5px; }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary);
+        }
+
+        .card.red-border { border-left-color: var(--secondary); }
+
+        .question-row {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        input[type="text"] {
+            border: none;
+            border-bottom: 2px solid #ccc;
+            font-size: 1rem;
+            padding: 5px;
+            width: 120px;
+            background: transparent;
+            text-align: center;
+            color: var(--secondary);
+            font-weight: bold;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-bottom-color: var(--primary);
+            background: #f9fff9;
+        }
+
+        .hint-text {
+            display: none;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .btn-toggle {
+            background-color: var(--text);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
+        .btn-toggle:hover { background-color: #555; }
+
+        .example-box {
+            background-color: var(--light-blue);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .follow-up {
+            background-color: #fff8e1; /* Sarımsı not kağıdı */
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ffe082;
+        }
+
+        .grammar-note {
+            background-color: var(--secondary);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Mobile Responsive Tweaks */
+        @media (max-width: 600px) {
+            input[type="text"] { width: 100%; margin-top: 5px; display: block; }
+            h1 { font-size: 1.5rem; }
+            .container { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🇮🇹 L'Intervista: Passato Prossimo</h1>
+    <p>Arkadaşını tanı, soruları tamamla ve rapor et!</p>
+</header>
+
+<div class="container">
+
+    <section id="part1">
+        <h2>1. Bölüm: Soruları Hazırla (Prepara le domande)</h2>
+        <p>Aşağıdaki soruları parantez içindeki fiili doğru çekimleyerek tamamlayın. (Yardımcı fiile dikkat!)</p>
+        
+        <div class="card">
+            <div class="question-row">
+                1. Quando sei <input type="text" placeholder="(nascere)"> ?
+                <div class="hint-text">Cevap: nato / nata</div>
+            </div>
+            <div class="question-row">
+                2. Quando è stata l'ultima volta che sei <input type="text" placeholder="(andare)"> in vacanza?
+                <div class="hint-text">Cevap: andato / andata</div>
+            </div>
+            <div class="question-row">
+                3. Quando hai <input type="text" placeholder="(finire)"> la scuola elementare?
+                <div class="hint-text">Cevap: finito</div>
+            </div>
+            <div class="question-row">
+                4. Quando hai <input type="text" placeholder="(cominciare)"> a studiare l'italiano?
+                <div class="hint-text">Cevap: cominciato</div>
+            </div>
+            <div class="question-row">
+                5. Quando sei <input type="text" placeholder="(andare)"> al cinema l'ultima volta?
+                <div class="hint-text">Cevap: andato / andata</div>
+            </div>
+            <div class="question-row">
+                6. Quando sei <input type="text" placeholder="(stare)"> all'estero per la prima volta?
+                <div class="hint-text">Cevap: stato / stata</div>
+            </div>
+            <div class="question-row">
+                7. Quando hai <input type="text" placeholder="(comprare)"> il tuo cellulare?
+                <div class="hint-text">Cevap: comprato</div>
+            </div>
+            <div class="question-row">
+                8. Quando hai <input type="text" placeholder="(cucinare)"> la pizza a casa?
+                <div class="hint-text">Cevap: cucinato</div>
+            </div>
+
+            <button class="btn-toggle" onclick="toggleHints('part1')">Cevapları Göster / Gizle</button>
+        </div>
+    </section>
+
+    <section id="part2">
+        <h2>2. Bölüm: Nasıl Cevap Verilir? (Come rispondere)</h2>
+        <p>Sadece "Dün" deme! Tam cümle kurmak için bu kalıpları kullan.</p>
+
+        <div class="card red-border">
+            <h3>Soru 1: Doğum Günü</h3>
+            <div class="example-box">
+                <strong>A:</strong> Sono nato/a <u>nel 2005</u>. <br>
+                <strong>B:</strong> Sono nato/a <u>il 15 maggio</u>.
+            </div>
+
+            <h3>Soru 2: Tatil</h3>
+            <div class="example-box">
+                <strong>A:</strong> ... <u>l'estate scorsa</u> (geçen yaz). <br>
+                <strong>B:</strong> Sono andato/a in vacanza <u>due mesi fa</u> (iki ay önce).
+            </div>
+            
+            <h3>Soru 5: Sinema</h3>
+            <div class="example-box">
+                <strong>A:</strong> Sono andato/a al cinema <u>domenica scorsa</u>. <br>
+                <strong>B:</strong> Sono andato/a al cinema <u>il fine settimana scorso</u>.
+            </div>
+
+            <h3>Soru 8: Pizza</h3>
+            <div class="example-box">
+                <strong>A:</strong> Ho cucinato la pizza <u>ieri sera</u>. <br>
+                <strong>B:</strong> Non ho <u>mai</u> (asla) cucinato la pizza.
+            </div>
+        </div>
+    </section>
+
+    <section id="part3">
+        <h2>3. Bölüm: Sohbeti Derinleştir (Approfondimento)</h2>
+        <p>Cevabı aldın, peki ya sonra? Sohbeti bitirme, detay sor!</p>
+        
+        <div class="follow-up">
+            <p><strong>🗣️ Arkadaşın:</strong> "Sono andato in vacanza l'estate scorsa."</p>
+            <p><strong>👉 Sen (Nereye?):</strong> "Ah, bello! E <b>dove</b> sei andato/a?"</p>
+            <p><strong>👉 Sen (Kiminle?):</strong> "<b>Con chi</b> sei andato/a?"</p>
+            <hr>
+            <p><strong>🗣️ Arkadaşın:</strong> "Ho comprato il cellulare due mesi fa."</p>
+            <p><strong>👉 Sen (Ne kadar?):</strong> "E <b>quanto</b> hai pagato?"</p>
+            <p><strong>👉 Sen (Hangi marka?):</strong> "Che <b>marca</b> è?"</p>
+        </div>
+    </section>
+
+    <section id="part4">
+        <h2>4. Bölüm: Sınıfa Rapor Et (Riferire)</h2>
+        <p>Şimdi partnerini sınıfa anlat. Dikkat et: Artık "Ben" değil "O" (Lui/Lei) var!</p>
+
+        <div class="grammar-note">
+            ⚠️ DİKKAT: Essere (olmak) fiili cinsiyete göre değişir!<br>
+            Lui (Erkek) -> nat<b>o</b> / andat<b>o</b><br>
+            Lei (Kız) -> nat<b>a</b> / andat<b>a</b>
+        </div>
+
+        <div class="card">
+            <h3>Örnek (Esempio):</h3>
+            <p><i>"Questo è il mio amico Carlo. Lui è nato nel 2005. È andato in vacanza in Italia."</i></p>
+            <hr>
+            
+            <h3>Şimdi sen tamamla:</h3>
+            <div class="question-row">
+                1. Questo/a è <input type="text" placeholder="İsim">.
+            </div>
+            <div class="question-row">
+                2. Lui/Lei <input type="text" placeholder="è / ha"> nato/a nel / il ...
+            </div>
+            <div class="question-row">
+                3. Lui/Lei <input type="text" placeholder="è / ha"> andato/a in vacanza a (nereye?)...
+            </div>
+            <div class="question-row">
+                4. Lui/Lei <input type="text" placeholder="è / ha"> finito la scuola elementare nel...
+            </div>
+            <div class="question-row">
+                5. Lui/Lei <input type="text" placeholder="è / ha"> cucinato la pizza...
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    function toggleHints(sectionId) {
+        const section = document.getElementById(sectionId);
+        const hints = section.querySelectorAll('.hint-text');
+        
+        hints.forEach(hint => {
+            if (hint.style.display === "block") {
+                hint.style.display = "none";
+            } else {
+                hint.style.display = "block";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
