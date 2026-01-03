@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musica al Museo - Full Quiz</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-color: #4a4a8a;
+            --highlight-color: #f6d365;
+            --tape-color: rgba(255, 255, 255, 0.6);
+            --bg-color: #fdfbf7;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- POSTER ALANI --- */
+        .poster-column {
+            text-align: center;
+            padding-top: 15px;
+        }
+
+        .poster-frame {
+            position: relative;
+            display: inline-block;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+            transform: rotate(-1deg);
+            max-width: 90%; 
+        }
+
+        .poster-frame img {
+            width: 100%;
+            height: auto;
+            border-radius: 2px;
+            display: block;
+        }
+
+        .tape {
+            position: absolute;
+            background-color: var(--tape-color);
+            width: 80px;
+            height: 25px;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(2deg);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        /* --- METİN --- */
+        h1 {
+            font-family: 'Patrick Hand', cursive;
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 10px;
+            line-height: 1.1;
+            text-align: center;
+        }
+
+        .reading-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            text-align: left;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Etkileşimli Fiiller */
+        .pp-verb {
+            border-bottom: 2px solid var(--primary-color);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary-color);
+            background-color: rgba(74, 74, 138, 0.05);
+            padding: 0 2px;
+        }
+
+        .pp-verb:active, .pp-verb:hover {
+            background-color: var(--highlight-color);
+            color: black;
+        }
+
+        /* SES BUTONU */
+        .audio-controls {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .btn-audio {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* LEJAND */
+        .leggenda-box {
+            background-color: #eef;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* SORULAR */
+        .questions-section {
+            margin-top: 25px;
+            border-top: 2px dashed #ddd;
+            padding-top: 20px;
+        }
+
+        .question-item {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .q-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border-radius: 8px 8px 0 0;
+            display: inline-block;
+        }
+
+        .q-text {
+            display: block;
+            padding: 10px 15px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #444;
+        }
+
+        .select-box {
+            width: 90%;
+            margin: 0 15px 15px 15px;
+            padding: 12px;
+            font-size: 1rem;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .select-box:focus {
+            border-color: var(--primary-color);
+        }
+
+        .feedback {
+            padding: 0 15px 15px 15px;
+            font-weight: bold;
+            display: none; /* Başlangıçta gizli */
+        }
+        .correct { color: #2e7d32; display: block;}
+        .incorrect { color: #c62828; display: block;}
+
+        /* Mobil Uyarısı */
+        .mobile-warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            font-size: 0.8rem;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div id="browserWarning" class="mobile-warning">
+        ⚠️ Ses özelliği için lütfen Chrome kullanın.
+    </div>
+
+    <div class="poster-column">
+        <div class="poster-frame">
+            <div class="tape"></div>
+            <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=600&q=80" alt="Musica Poster">
+        </div>
+    </div>
+
+    <div class="content-column">
+        
+        <h1>Sardegna: Sette appuntamenti musicali</h1>
+        
+        <div class="audio-controls">
+            <button class="btn-audio" onclick="toggleSpeech()">
+                <span>🔊</span> Metni Dinle (Ascolta)
+            </button>
+        </div>
+
+        <div class="reading-text" id="italianText">
+            Il museo della città di Sassari <span class="pp-verb" onclick="alert('ha pubblicato = Yayımladı')">ha pubblicato</span> il programma di "Musica al Museo", il progetto che <span class="pp-verb" onclick="alert('è iniziato = Başladı')">è iniziato</span> solo due anni fa, ma che <span class="pp-verb" onclick="alert('è diventato = Oldu / Haline geldi')">è già diventato</span> un appuntamento fisso per il pubblico. Infatti, ogni anno, da gennaio a marzo, il Museo ospita artisti locali e internazionali e propone concerti jazz, folk, blues e di musica classica.
+            <br><br>
+            Come l'anno scorso, il primo ospite è Francesco Manara, violinista che <span class="pp-verb" onclick="alert('ha vinto = Kazandı')">ha vinto</span> molti premi internazionali e che alcuni anni fa <span class="pp-verb" onclick="alert('è diventato = Oldu (Meslek/Durum)')">è diventato</span> primo violino del Quartetto d'Archi della Scala.
+        </div>
+
+        <div class="leggenda-box">
+            <strong>💡 İpucu:</strong> Altı çizili fiillere dokunarak Türkçe anlamlarını görebilirsin.
+        </div>
+
+        <div class="questions-section">
+            <h3 style="color:var(--primary-color); text-align:center;">Domande di comprensione (6 Soru)</h3>
+
+            <div class="question-item">
+                <span class="q-header">Soru 1</span>
+                <span class="q-text">Quando e dove è iniziato il progetto?</span>
+                <select class="select-box" onchange="checkAnswer(this, 'b')">
+                    <option value="">Cevabını seç...</option>
+                    <option value="a">L'anno scorso a Roma.</option>
+                    <option value="b">Due anni fa a Sassari.</option>
+                    <option value="c">Nel 2024 a Milano.</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item">
+                <span class="q-header">Soru 2</span>
+                <span class="q-text">Quanto tempo dura l'evento?</span>
+                <select class="select-box" onchange="checkAnswer(this, 'a')">
+                    <option value="">Cevabını seç...</option>
+                    <option value="a">Tre mesi (da gennaio a marzo).</option>
+                    <option value="b">Tutto l'anno.</option>
+                    <option value="c">Solo una settimana.</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item">
+                <span class="q-header">Soru 3</span>
+                <span class="q-text">Che tipo di concerti ospita il museo?</span>
+                <select class="select-box" onchange="checkAnswer(this, 'c')">
+                    <option value="">Cevabını seç...</option>
+                    <option value="a">Solo musica classica.</option>
+                    <option value="b">Rock e Pop.</option>
+                    <option value="c">Jazz, folk, blues e classica.</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item">
+                <span class="q-header">Soru 4</span>
+                <span class="q-text">Quando Manara è diventato primo violino?</span>
+                <select class="select-box" onchange="checkAnswer(this, 'b')">
+                    <option value="">Cevabını seç...</option>
+                    <option value="a">Ieri.</option>
+                    <option value="b">Alcuni anni fa.</option>
+                    <option value="c">L'anno prossimo.</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item">
+                <span class="q-header">Soru 5</span>
+                <span class="q-text">Chi è il primo ospite (misafir) di quest'anno?</span>
+                <select class="select-box" onchange="checkAnswer(this, 'a')">
+                    <option value="">Cevabını seç...</option>
+                    <option value="a">Francesco Manara.</option>
+                    <option value="b">Il direttore del museo.</option>
+                    <option value="c">Un cantante pop famoso.</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item">
+                <span class="q-header">Soru 6</span>
+                <span class="q-text">Cosa è diventato il progetto per il pubblico?</span>
+                <select class="select-box" onchange="checkAnswer(this, 'b')">
+                    <option value="">Cevabını seç...</option>
+                    <option value="a">Un problema noioso.</option>
+                    <option value="b">Un appuntamento fisso.</option>
+                    <option value="c">Un festival estivo.</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    if (!isChrome && !('speechSynthesis' in window)) {
+        document.getElementById('browserWarning').style.display = 'block';
+    }
+
+    let isSpeaking = false;
+    
+    function toggleSpeech() {
+        if (!('speechSynthesis' in window)) {
+            alert("Ses özelliği desteklenmiyor.");
+            return;
+        }
+
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            isSpeaking = false;
+            return;
+        }
+
+        // Sadece İtalyanca metni al (başlıkları okumasın diye)
+        const textContent = document.getElementById("italianText").innerText;
+        const utterance = new SpeechSynthesisUtterance(textContent);
+        
+        let voices = window.speechSynthesis.getVoices();
+        let itVoice = voices.find(voice => voice.lang.includes('it'));
+        if (itVoice) utterance.voice = itVoice;
+        
+        utterance.lang = 'it-IT';
+        utterance.rate = 0.9;
+
+        utterance.onend = function() { isSpeaking = false; };
+        window.speechSynthesis.speak(utterance);
+        isSpeaking = true;
+    }
+
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = function() {
+            window.speechSynthesis.getVoices();
+        };
+    }
+
+    function checkAnswer(select, answer) {
+        const feedback = select.parentElement.querySelector('.feedback');
+        if (select.value === answer) {
+            feedback.innerHTML = "✓ Bravo! (Doğru)";
+            feedback.className = "feedback correct";
+            select.style.borderColor = "#2e7d32";
+        } else if (select.value === "") {
+            feedback.textContent = "";
+            select.style.borderColor = "#ddd";
+        } else {
+            feedback.innerHTML = "✗ Sbagliato! (Yanlış)";
+            feedback.className = "feedback incorrect";
+            select.style.borderColor = "#c62828";
+        }
+    }
+</script>
+
+</body>
+</html>
