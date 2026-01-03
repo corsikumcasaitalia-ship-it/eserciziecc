@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dedektif Luigi - Scroll Fix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a202c;
+            /* Scrollu serbest bıraktık */
+            overflow-y: auto; 
+            min-height: 100vh;
+        }
+        .handwritten {
+            font-family: 'Reenie Beanie', cursive;
+            font-size: 2.2rem;
+            transform: rotate(-1deg);
+            line-height: 1.1;
+        }
+        .draggable-item {
+            /* Sadece bu elemanlara dokunulduğunda sayfa kaymasını engelle */
+            touch-action: none; 
+            cursor: grab;
+            user-select: none;
+            /* Mobilde daha rahat basılması için tap highlight kaldırıldı */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+        .drop-zone {
+            transition: all 0.3s ease;
+        }
+        .drop-active {
+            border-color: #60a5fa !important;
+            background-color: #eff6ff !important;
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+        }
+        /* Başarı Animasyonu */
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+    </style>
+</head>
+<body class="w-full flex flex-col items-center p-4 text-gray-100 min-h-screen">
+
+    <div class="w-full max-w-md flex flex-col items-center space-y-4 mb-6">
+        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+            <div id="progress-bar" class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <div class="text-xs text-gray-400 w-full text-right" id="question-counter">Soru 1/8</div>
+
+        <div class="bg-[#fdfbf7] text-gray-800 p-5 rounded shadow-xl w-full transform rotate-1 relative border-l-4 border-red-500">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-yellow-200 opacity-50 rotate-2 shadow-sm"></div>
+            
+            <p class="text-xs text-gray-400 uppercase font-bold tracking-widest text-center mb-2">12 Dicembre, Lunedì</p>
+            <div class="text-center">
+                <span id="q-time" class="text-red-700 font-bold text-2xl block mb-1"></span>
+                <span id="q-text" class="handwritten text-3xl block text-blue-900"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="drop-area" class="drop-zone w-full max-w-md h-40 border-4 border-dashed border-gray-600 rounded-xl flex flex-col items-center justify-center bg-gray-800/50 text-gray-400 relative mb-8 flex-shrink-0">
+        <div class="pointer-events-none text-center p-4">
+            <span class="text-4xl block mb-2 opacity-50">👇</span>
+            <p class="text-sm font-bold uppercase tracking-wider opacity-50">Cevabı Buraya Sürükle</p>
+        </div>
+    </div>
+
+    <div id="options-container" class="w-full max-w-md flex flex-col gap-4 pb-12">
+        </div>
+
+    <div id="feedback-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white text-gray-900 p-6 rounded-2xl text-center max-w-xs w-full animate-pop shadow-2xl border-4 border-white">
+            <div id="feedback-icon" class="text-6xl mb-4 block"></div>
+            <h2 id="feedback-title" class="text-2xl font-bold mb-2"></h2>
+            <p id="feedback-msg" class="text-gray-600 mb-6 text-lg leading-tight"></p>
+            <button onclick="nextQuestion()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg w-full transition-colors text-lg">
+                Devam Et &rarr;
+            </button>
+        </div>
+    </div>
+
+    <div id="end-screen" class="hidden fixed inset-0 bg-gray-900 flex flex-col items-center justify-center z-50 p-6 text-center overflow-y-auto">
+        <div class="text-8xl mb-6 animate-bounce">🕵️‍♂️</div>
+        <h1 class="text-4xl font-bold text-white mb-2">Vaka Çözüldü!</h1>
+        <p class="text-gray-400 mb-8 text-lg">Luigi'nin masumiyetini kanıtladın.</p>
+        
+        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 mb-8 w-full max-w-xs">
+            <p class="text-gray-400 text-sm uppercase tracking-widest mb-2">Toplam Puan</p>
+            <div class="text-6xl font-bold text-blue-400" id="final-score"></div>
+        </div>
+
+        <button onclick="location.reload()" class="bg-green-600 hover:bg-green-500 text-white px-10 py-4 rounded-full font-bold shadow-lg text-xl transition-transform active:scale-95">
+            Tekrar Oyna ↺
+        </button>
+    </div>
+
+    <script>
+        // --- SORU LİSTESİ ---
+        const data = [
+            { 
+                time: "10.10", 
+                text: "andare all'Università", 
+                correct: "È andato all'università.", 
+                distractors: ["Ha andato all'università.", "Va all'università."] 
+            },
+            { 
+                time: "12.00", 
+                text: "parlare con il Prof. Berti", 
+                correct: "Ha parlato con il Prof.", 
+                distractors: ["È parlato con il Prof.", "Ha parlo con il Prof."] 
+            },
+            { 
+                time: "14.00", 
+                text: "mangiare alla mensa", 
+                correct: "Ha mangiato alla mensa.", 
+                distractors: ["È mangiato alla mensa.", "Ha mangiuto alla mensa."] 
+            },
+            { 
+                time: "15.30", 
+                text: "incontrare Nina al bar", 
+                correct: "Ha incontrato Nina.", 
+                distractors: ["È incontrato Nina.", "Incontra Nina."] 
+            },
+            { 
+                time: "17.00", 
+                text: "andare dal dentista", 
+                correct: "È andato dal dentista.", 
+                distractors: ["Ha andato dal dentista.", "È andata dal dentista."] 
+            },
+            { 
+                time: "18.20", 
+                text: "chiamare Giorgio", 
+                correct: "Ha chiamato Giorgio.", 
+                distractors: ["È chiamato Giorgio.", "Ha chiamuto Giorgio."] 
+            },
+            { 
+                time: "18.30 - 20.00", 
+                text: "studiare", 
+                correct: "Ha studiato.", 
+                distractors: ["È studiato.", "Ha studito."] 
+            },
+            { 
+                time: "20.30", 
+                text: "incontrare Nina (di nuovo)", 
+                correct: "Ha incontrato Nina.", 
+                distractors: ["È incontrato Nina.", "Nina ha incontrato."] 
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+
+        function initGame() {
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = data[currentIndex];
+            
+            // UI Güncellemeleri
+            document.getElementById('q-time').innerText = q.time;
+            document.getElementById('q-text').innerText = q.text;
+            document.getElementById('question-counter').innerText = `Soru ${currentIndex + 1}/${data.length}`;
+            
+            // Drop zone reset
+            const dropZone = document.getElementById('drop-area');
+            dropZone.innerHTML = `
+                <div class="pointer-events-none text-center p-4">
+                    <span class="text-4xl block mb-2 opacity-50">👇</span>
+                    <p class="text-sm font-bold uppercase tracking-wider opacity-50">Cevabı Buraya Sürükle</p>
+                </div>
+            `;
+            dropZone.className = "drop-zone w-full max-w-md h-40 border-4 border-dashed border-gray-600 rounded-xl flex flex-col items-center justify-center bg-gray-800/50 text-gray-400 relative mb-8 flex-shrink-0";
+
+            // Seçenekleri oluştur
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            let allOptions = [q.correct, ...q.distractors];
+            allOptions.sort(() => Math.random() - 0.5);
+
+            allOptions.forEach(opt => {
+                const el = document.createElement('div');
+                el.innerText = opt;
+                el.className = "draggable-item bg-white text-gray-900 p-4 rounded-xl shadow-[0_4px_0_rgb(0,0,0,0.2)] border-2 border-gray-200 font-bold text-center text-lg active:shadow-none active:translate-y-[4px] transition-all";
+                el.setAttribute('data-answer', opt);
+                
+                // Eventleri bağla
+                addDragEvents(el);
+                optionsContainer.appendChild(el);
+            });
+
+            // Progress Bar
+            document.getElementById('progress-bar').style.width = `${((currentIndex) / data.length) * 100}%`;
+            
+            // Sayfa başına dön (yeni soru geldiğinde yukarı kaydır)
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- DRAG & DROP ENGINE (SCROLL DOSTU) ---
+        function addDragEvents(el) {
+            let startX, startY, initialLeft, initialTop;
+            let isDragging = false;
+
+            const startDrag = (e) => {
+                isDragging = true;
+                const touch = e.type === 'touchstart' ? e.touches[0] : e;
+                
+                const rect = el.getBoundingClientRect();
+                
+                // Elementi "fixed" yaparak ekrana kilitliyoruz.
+                // Böylece sayfa scroll olsa bile parmağın altında kalır.
+                el.style.position = 'fixed';
+                el.style.left = rect.left + 'px';
+                el.style.top = rect.top + 'px';
+                el.style.width = rect.width + 'px';
+                el.style.zIndex = 9999;
+                el.classList.add('scale-105', 'shadow-2xl');
+                
+                startX = touch.clientX;
+                startY = touch.clientY;
+                initialLeft = rect.left;
+                initialTop = rect.top;
+            };
+
+            const moveDrag = (e) => {
+                if (!isDragging) return;
+                // Sadece sürükleme sırasında sayfanın oynamasını engelle
+                if (e.cancelable) e.preventDefault(); 
+                
+                const touch = e.type === 'touchmove' ? e.touches[0] : e;
+                const dx = touch.clientX - startX;
+                const dy = touch.clientY - startY;
+
+                el.style.left = `${initialLeft + dx}px`;
+                el.style.top = `${initialTop + dy}px`;
+
+                const dropZone = document.getElementById('drop-area');
+                const dropRect = dropZone.getBoundingClientRect();
+                const elRect = el.getBoundingClientRect();
+
+                if (isOverlapping(elRect, dropRect)) {
+                    dropZone.classList.add('drop-active');
+                } else {
+                    dropZone.classList.remove('drop-active');
+                }
+            };
+
+            const endDrag = (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                const dropZone = document.getElementById('drop-area');
+                dropZone.classList.remove('drop-active');
+                el.classList.remove('scale-105', 'shadow-2xl');
+                
+                const dropRect = dropZone.getBoundingClientRect();
+                const elRect = el.getBoundingClientRect();
+
+                if (isOverlapping(elRect, dropRect)) {
+                    checkAnswer(el.getAttribute('data-answer'));
+                } else {
+                    // Animasyonla geri dön
+                    el.style.transition = 'all 0.3s ease';
+                    el.style.left = `${initialLeft}px`;
+                    el.style.top = `${initialTop}px`;
+                    
+                    setTimeout(() => {
+                        // Reset: Pozisyonu temizle ki normal akışa dönsün
+                        el.style.position = '';
+                        el.style.left = '';
+                        el.style.top = '';
+                        el.style.width = '';
+                        el.style.zIndex = '';
+                        el.style.transition = '';
+                    }, 300);
+                }
+            };
+
+            el.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', moveDrag);
+            document.addEventListener('mouseup', endDrag);
+
+            el.addEventListener('touchstart', startDrag, {passive: false});
+            document.addEventListener('touchmove', moveDrag, {passive: false});
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function isOverlapping(rect1, rect2) {
+            return !(rect1.right < rect2.left || 
+                     rect1.left > rect2.right || 
+                     rect1.bottom < rect2.top || 
+                     rect1.top > rect2.bottom);
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const currentQ = data[currentIndex];
+            const feedbackModal = document.getElementById('feedback-modal');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const msg = document.getElementById('feedback-msg');
+
+            feedbackModal.classList.remove('hidden');
+
+            if (selectedAnswer === currentQ.correct) {
+                score++;
+                icon.innerText = "✅";
+                title.innerText = "Eccellente!";
+                title.className = "text-2xl font-bold mb-2 text-green-600";
+                msg.innerText = "Cevabın doğru.";
+                
+                const dropZone = document.getElementById('drop-area');
+                dropZone.innerHTML = `<div class="text-xl font-bold text-white bg-green-500 px-6 py-3 rounded-lg shadow-lg animate-pop text-center">${selectedAnswer}</div>`;
+                dropZone.className = "drop-zone w-full max-w-md h-40 border-4 border-green-500 rounded-xl flex items-center justify-center bg-gray-800 relative mb-8 flex-shrink-0";
+                
+            } else {
+                icon.innerText = "⚠️";
+                title.innerText = "Attenzione!";
+                title.className = "text-2xl font-bold mb-2 text-red-600";
+                msg.innerHTML = `Yanlış cevap.<br><span class="text-sm text-gray-500">Doğrusu:</span><br><b class="text-lg text-gray-800">${currentQ.correct}</b>`;
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById('feedback-modal').classList.add('hidden');
+            currentIndex++;
+            
+            if (currentIndex < data.length) {
+                loadQuestion();
+            } else {
+                document.getElementById('final-score').innerText = `${score}/${data.length}`;
+                document.getElementById('end-screen').classList.remove('hidden');
+                document.getElementById('progress-bar').style.width = '100%';
+            }
+        }
+
+        initGame();
+    </script>
+</body>
+</html>
