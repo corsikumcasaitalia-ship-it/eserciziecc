@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Progetto 1a - Final Version</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f4f6;
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .story-font {
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1.3rem;
+            color: #1e3a8a;
+        }
+
+        .drop-zone { transition: all 0.3s ease; }
+        .drop-active {
+            background-color: #dbeafe !important;
+            border-color: #3b82f6 !important;
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Kart ve Handle Stilleri */
+        .draggable-item {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            overflow: hidden;
+            touch-action: pan-y; 
+        }
+        .item-text {
+            padding: 1rem;
+            flex-grow: 1;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #374151;
+            display: flex;
+            align-items: center;
+        }
+        .drag-handle {
+            width: 3.5rem;
+            background-color: #eff6ff;
+            border-left: 1px solid #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            touch-action: none; 
+        }
+        .drag-handle:active {
+            background-color: #bfdbfe;
+            cursor: grabbing;
+        }
+        .drag-handle span { font-size: 1.5rem; opacity: 0.7; }
+
+        @keyframes pop {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        /* --- STICKY NOTE EFEKTLERİ --- */
+        .sticky-container {
+            position: sticky;
+            top: 10px; 
+            z-index: 50;
+            padding: 0 1rem;
+            pointer-events: none; 
+        }
+        
+        .real-sticky-note {
+            background-color: #fef08a; 
+            background-image: linear-gradient(to bottom right, #fef08a, #fde047);
+            color: #854d0e;
+            padding: 1rem;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            transform: rotate(-1deg); 
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.15); 
+            border-radius: 2px;
+            border-bottom-right-radius: 20px 5px; 
+            position: relative;
+            pointer-events: auto;
+            font-family: 'Patrick Hand', cursive; 
+        }
+
+        .tape-effect {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(2deg);
+            width: 100px;
+            height: 30px;
+            background-color: rgba(255,255,255,0.4);
+            border-left: 1px dashed rgba(0,0,0,0.1);
+            border-right: 1px dashed rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="sticky-container">
+        <div class="real-sticky-note">
+            <div class="tape-effect"></div>
+            <p class="text-center font-bold text-lg leading-none mb-2 text-yellow-800 border-b border-yellow-600/20 pb-1">
+                RACCONTARE
+            </p>
+            <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-sm leading-tight text-yellow-900">
+                <span>• all'inizio / per prima cosa</span>
+                <span>• prima... / prima di mangiare</span>
+                <span>• dopo le due...</span>
+                <span>• poi... / dopo...</span>
+                <span>• più tardi...</span>
+                <span>• così... / alla fine...</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="flex-grow w-full max-w-md mx-auto p-4 flex flex-col items-center pt-4">
+        
+        <div class="w-full bg-gray-300 rounded-full h-1.5 mb-6 mt-2">
+            <div id="progress-bar" class="bg-blue-600 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+
+        <div id="prev-context" class="w-full text-xs text-gray-500 text-center italic min-h-[2.5rem] mb-6 px-4 leading-relaxed bg-white/60 py-2 rounded-lg border border-gray-100 shadow-sm transition-opacity duration-300">
+            La storia comincia...
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-lg w-full border border-gray-200 animate-pop relative mb-6">
+            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-blue-50 border-4 border-white rounded-full flex items-center justify-center text-3xl shadow-md z-10" id="scene-icon">
+                📞
+            </div>
+            
+            <div class="mt-6 text-center">
+                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 pt-1" id="scene-title">1. Telefonare</h2>
+                
+                <div id="drop-area" class="drop-zone border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 p-4 min-h-[80px] flex items-center justify-center text-gray-400 text-sm font-medium">
+                    Trascina la frase qui
+                </div>
+            </div>
+        </div>
+        
+        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-2 w-full text-center opacity-70">
+            Usa la mano <span class="text-lg align-middle">✋</span> per trascinare
+        </p>
+
+        <div id="options-container" class="w-full flex flex-col gap-3 pb-4">
+            </div>
+
+    </main>
+
+    <footer class="w-full bg-gray-100 border-t border-gray-200 p-4 mt-auto">
+        <div class="max-w-md mx-auto flex justify-between gap-3 items-center">
+            <button id="btn-prev" onclick="prevStep()" class="text-xs font-bold text-gray-500 py-3 px-5 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 transition disabled:opacity-30">
+                &larr; Indietro
+            </button>
+            
+            <span class="text-[10px] text-gray-400 font-bold tracking-widest uppercase opacity-50">ESERCIZIO 4</span>
+
+            <button id="btn-next" onclick="handleNextClick()" class="text-xs font-bold text-white py-3 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 transition shadow-sm flex items-center gap-1">
+                Avanti &rarr;
+            </button>
+        </div>
+    </footer>
+
+    <div id="feedback-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white text-gray-900 p-6 rounded-2xl text-center max-w-xs w-full animate-pop shadow-2xl border-4 border-white">
+            <div id="feedback-icon" class="text-5xl mb-3 block"></div>
+            <h2 id="feedback-title" class="text-xl font-bold mb-1"></h2>
+            <p id="feedback-msg" class="text-gray-600 mb-4 text-sm"></p>
+            <button onclick="closeModalAndNext()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold shadow w-full text-sm">Continua</button>
+        </div>
+    </div>
+
+    <div id="end-screen" class="hidden fixed inset-0 bg-gray-50 flex flex-col items-center justify-center z-50 p-6 text-center overflow-y-auto">
+        <div class="text-6xl mb-4">🇮🇹</div>
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Bravissimo/a!</h1>
+        
+        <p class="text-gray-500 mb-6 text-sm">Hai raccontato un'altra giornata di Luigi.</p>
+        
+        <div class="bg-white p-5 rounded-xl border border-gray-200 text-left w-full max-w-md shadow-sm mb-6 max-h-[50vh] overflow-y-auto">
+            <h3 class="font-bold text-blue-800 border-b pb-2 mb-2 text-xs uppercase">Il Tuo Racconto:</h3>
+            <div id="final-story-text" class="story-font leading-relaxed text-sm"></div>
+        </div>
+        
+        <button onclick="location.reload()" class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold shadow w-full max-w-xs text-sm">Ricomincia</button>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const storyData = [
+            { id: 1, icon: "📞", title: "1. Telefonare / Nina", correct: "All'inizio, Luigi ha telefonato a Nina.", distractors: ["Alla fine, ha telefonato a Nina.", "Più tardi, ha telefonato a Nina.", "Dopo le due, telefona a Nina."] },
+            { id: 2, icon: "🏫", title: "2. Incontrare / Università", correct: "Poi, ha incontrato Nina all'università.", distractors: ["Per prima cosa, ha incontrato Nina.", "Alla fine, ha incontrato Nina.", "Prima di mangiare, incontra Nina."] },
+            { id: 3, icon: "☕", title: "3. Andare / Bar", correct: "Prima di mangiare, sono andati al bar.", distractors: ["Dopo le due, sono andati al bar.", "Alla fine, vanno al bar.", "Per prima cosa, sono andati al bar."] },
+            { id: 4, icon: "🍝", title: "4. Mangiare / Mensa", correct: "Più tardi, hanno mangiato alla mensa.", distractors: ["Prima, hanno mangiato alla mensa.", "All'inizio, mangiano alla mensa.", "Per prima cosa, hanno mangiato."] },
+            { id: 5, icon: "🏠", title: "5. Tornare / Casa", correct: "Dopo le due, sono tornati a casa.", distractors: ["Prima, sono tornati a casa.", "All'inizio, tornano a casa.", "Prima di mangiare, sono tornati."] },
+            { id: 6, icon: "💪", title: "6. Andare / Palestra", correct: "Alla fine, Luigi è andato in palestra.", distractors: ["Per prima cosa, è andato in palestra.", "Prima, va in palestra.", "All'inizio, è andato in palestra."] }
+        ];
+
+        let currentIndex = 0;
+        let userAnswers = new Array(storyData.length).fill(null);
+
+        function initGame() {
+            loadStep();
+        }
+
+        function loadStep() {
+            const step = storyData[currentIndex];
+            
+            // UI
+            document.getElementById('scene-icon').innerText = step.icon;
+            document.getElementById('scene-title').innerText = step.title;
+            document.getElementById('btn-prev').disabled = (currentIndex === 0);
+            const nextBtn = document.getElementById('btn-next');
+            nextBtn.innerHTML = (currentIndex === storyData.length - 1) ? "Finito ✨" : "Avanti &rarr;";
+
+            // Context
+            const prevContext = document.getElementById('prev-context');
+            if (currentIndex > 0) {
+                const prevAns = userAnswers[currentIndex - 1] || storyData[currentIndex - 1].correct;
+                prevContext.innerHTML = "<span class='font-bold text-gray-400 block text-[10px] mb-1 uppercase tracking-wider'>PASSO PRECEDENTE:</span>" + prevAns;
+            } else {
+                prevContext.innerHTML = "La storia comincia...";
+            }
+
+            // Drop Zone & Options
+            const dropZone = document.getElementById('drop-area');
+            const optionsContainer = document.getElementById('options-container');
+            
+            if (userAnswers[currentIndex]) {
+                dropZone.innerHTML = `<span class="story-font text-lg">${userAnswers[currentIndex]}</span>`;
+                dropZone.className = "drop-zone border-2 border-green-500 rounded-xl bg-green-50 p-4 min-h-[80px] flex items-center justify-center text-green-800 shadow-sm";
+                optionsContainer.innerHTML = '';
+            } else {
+                dropZone.innerHTML = "Trascina la frase qui";
+                dropZone.className = "drop-zone border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 p-4 min-h-[80px] flex items-center justify-center text-gray-400 text-sm font-medium";
+                
+                optionsContainer.innerHTML = '';
+                let opts = [step.correct, ...step.distractors].sort(() => Math.random() - 0.5);
+
+                opts.forEach(opt => {
+                    const el = document.createElement('div');
+                    el.className = "draggable-item";
+                    el.innerHTML = `
+                        <div class="item-text">${opt}</div>
+                        <div class="drag-handle" data-answer="${opt}">
+                            <span>✋</span>
+                        </div>
+                    `;
+                    const handle = el.querySelector('.drag-handle');
+                    addDragEvents(handle, el);
+                    optionsContainer.appendChild(el);
+                });
+            }
+
+            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / storyData.length) * 100}%`;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Navigation
+        function prevStep() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadStep();
+            }
+        }
+
+        function handleNextClick() {
+            if (!userAnswers[currentIndex]) {
+                userAnswers[currentIndex] = storyData[currentIndex].correct;
+            }
+            nextStepLogic();
+        }
+
+        function nextStepLogic() {
+            if (currentIndex < storyData.length - 1) {
+                currentIndex++;
+                loadStep();
+            } else {
+                finishGame();
+            }
+        }
+
+        function closeModalAndNext() {
+            document.getElementById('feedback-modal').classList.add('hidden');
+            nextStepLogic();
+        }
+
+        // Drag Logic
+        function addDragEvents(handle, containerElement) {
+            let startX, startY;
+            let clone = null;
+            let isDragging = false;
+
+            const startDrag = (e) => {
+                isDragging = true;
+                const touch = e.type === 'touchstart' ? e.touches[0] : e;
+                const rect = containerElement.getBoundingClientRect();
+                clone = containerElement.cloneNode(true);
+                clone.style.position = 'fixed';
+                clone.style.width = rect.width + 'px';
+                clone.style.left = rect.left + 'px';
+                clone.style.top = rect.top + 'px';
+                clone.style.zIndex = '9999';
+                clone.style.opacity = '0.95';
+                clone.style.transform = 'scale(1.02)';
+                clone.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+                clone.style.pointerEvents = 'none';
+                
+                document.body.appendChild(clone);
+                containerElement.style.opacity = '0.3';
+                startX = touch.clientX;
+                startY = touch.clientY;
+            };
+
+            const moveDrag = (e) => {
+                if (!isDragging || !clone) return;
+                if (e.cancelable) e.preventDefault();
+                const touch = e.type === 'touchmove' ? e.touches[0] : e;
+                const dx = touch.clientX - startX;
+                const dy = touch.clientY - startY;
+                const rect = containerElement.getBoundingClientRect();
+                clone.style.left = (rect.left + dx) + 'px';
+                clone.style.top = (rect.top + dy) + 'px';
+
+                const dropZone = document.getElementById('drop-area');
+                if (isOverlapping(clone.getBoundingClientRect(), dropZone.getBoundingClientRect())) {
+                    dropZone.classList.add('drop-active');
+                } else {
+                    dropZone.classList.remove('drop-active');
+                }
+            };
+
+            const endDrag = (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                const dropZone = document.getElementById('drop-area');
+                dropZone.classList.remove('drop-active');
+                
+                if (clone) {
+                    if (isOverlapping(clone.getBoundingClientRect(), dropZone.getBoundingClientRect())) {
+                        const answer = handle.getAttribute('data-answer');
+                        checkAnswer(answer);
+                    } else {
+                        containerElement.style.opacity = '1';
+                    }
+                    clone.remove();
+                    clone = null;
+                }
+            };
+
+            handle.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', moveDrag);
+            document.addEventListener('mouseup', endDrag);
+            handle.addEventListener('touchstart', startDrag, {passive: false});
+            document.addEventListener('touchmove', moveDrag, {passive: false});
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function isOverlapping(rect1, rect2) {
+            return !(rect1.right < rect2.left || rect1.left > rect2.right || rect1.bottom < rect2.top || rect1.top > rect2.bottom);
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const currentQ = storyData[currentIndex];
+            const feedbackModal = document.getElementById('feedback-modal');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const msg = document.getElementById('feedback-msg');
+
+            userAnswers[currentIndex] = selectedAnswer; 
+
+            feedbackModal.classList.remove('hidden');
+
+            if (selectedAnswer === currentQ.correct) {
+                icon.innerText = "✅";
+                title.innerText = "Bravo/a!";
+                title.className = "text-xl font-bold mb-1 text-green-600";
+                msg.innerText = "Ottima scelta.";
+            } else {
+                icon.innerText = "⚠️";
+                title.innerText = "Attenzione!";
+                title.className = "text-xl font-bold mb-1 text-red-600";
+                msg.innerHTML = `L'ordine logico richiede:<br><b>${currentQ.correct}</b>`;
+                userAnswers[currentIndex] = currentQ.correct;
+            }
+        }
+
+        function finishGame() {
+            const fullStory = userAnswers.map(ans => ans || "...").join('<br><br>');
+            document.getElementById('final-story-text').innerHTML = fullStory;
+            document.getElementById('end-screen').classList.remove('hidden');
+        }
+
+        initGame();
+    </script>
+</body>
+</html>
