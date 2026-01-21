@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>La Stanza del Detective | V18 (Görsel Kontrol)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- TEMEL --- */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #1a2c42; font-family: 'Lato', sans-serif; overflow: hidden; }
+
+        /* --- ÜST PANEL --- */
+        .hud {
+            position: fixed; top: 0; left: 0; width: 100%; min-height: 80px; 
+            background: #0d1621; border-bottom: 3px solid #d4af37; 
+            color: #fff; z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6); padding: 5px; box-sizing: border-box;
+        }
+        .mission { color: #d4af37; font-family: 'Playfair Display', serif; font-size: 1.3rem; margin: 5px 0; text-align: center; max-width: 80%; }
+        .sub-mission { font-size: 0.8rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- SOL KONTROL ALANI (GELİŞMİŞ) --- */
+        .left-control-panel {
+            position: fixed; left: 10px; top: 100px; bottom: 20px; width: 60px;
+            z-index: 2000; /* En üstte */
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(13, 22, 33, 0.8); /* Yarı saydam arka plan */
+            border-radius: 30px;
+            border: 2px solid #d4af37;
+            padding: 10px 0;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* Ok İkonları */
+        .arrow-icon { width: 24px; height: 24px; fill: #d4af37; margin: 5px 0; animation: bounceArrow 2s infinite; }
+        @keyframes bounceArrow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+        /* Slider (Range Input) Özelleştirme */
+        input[type=range][orient=vertical] {
+            writing-mode: bt-lr; /* IE/Edge */
+            -webkit-appearance: slider-vertical; /* Webkit */
+            width: 40px; flex-grow: 1; /* Alanı doldur */
+            margin: 10px 0;
+            cursor: grab;
+            opacity: 0.9;
+            accent-color: #d4af37; /* Modern tarayıcılarda altın rengi */
+        }
+        input[type=range]:active { cursor: grabbing; }
+
+        /* El İkonu (Görsel İpucu) */
+        .hand-hint {
+            font-size: 0.7rem; color: #d4af37; font-weight: bold;
+            text-transform: uppercase; writing-mode: vertical-rl; text-orientation: mixed;
+            margin-top: 5px; letter-spacing: 2px;
+        }
+
+        /* --- OYUN ALANI --- */
+        .game-wrapper {
+            width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden;
+            padding-top: 100px; padding-bottom: 100px; 
+            display: flex; justify-content: center; align-items: flex-start;
+            box-sizing: border-box; padding-left: 80px; /* Panel için yer aç */
+        }
+
+        .game-container {
+            position: relative; width: 96%; max-width: 1200px; height: auto; 
+            box-shadow: 0 0 40px rgba(0,0,0,0.6); line-height: 0; flex-shrink: 0;
+            border: 2px solid #000;
+        }
+
+        .base-image { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+        .darkness {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle 35vmax at 50% 50%, transparent 0%, rgba(0,0,0,0.98) 25%, rgba(0,0,0,1) 100%);
+            pointer-events: none; z-index: 20;
+        }
+        .click-grid {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: grid; z-index: 30;
+            grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(5, 1fr);   
+        }
+        .zone { position: relative; cursor: pointer; }
+        .zone.found { border: 4px solid #008C45 !important; background-color: rgba(0, 140, 69, 0.2); }
+
+        /* --- MODAL --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; display: none; backdrop-filter: blur(5px); justify-content: center; align-items: center; }
+        .modal { background: white; color: #333; padding: 25px; border-radius: 15px; text-align: center; width: 90%; max-width: 500px; border: 4px solid #008C45; }
+        .sentence-box { background: #f0f7f4; border: 2px dashed #008C45; padding: 10px; margin-bottom: 20px; min-height: 40px; font-size: 1.3rem; font-weight: bold; border-radius: 8px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; line-height: normal; }
+        .words-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
+        .word-btn { background: #1a2c42; color: white; border: none; padding: 12px 18px; font-size: 1.1rem; border-radius: 6px; cursor: pointer; line-height: normal; }
+        .word-btn.used { opacity: 0.3; pointer-events: none; }
+        .btn-next { background: #008C45; color: white; border: none; padding: 12px 30px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; display: none; }
+        .error-msg { color: #CD212A; font-weight: bold; height: 25px; line-height: normal; font-size: 1rem;}
+        
+        @media (max-width: 600px) { .mission { font-size: 1.1rem; } }
+    </style>
+</head>
+<body>
+
+    <div class="left-control-panel">
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M12 2l-10 10h6v10h8v-10h6z"/></svg>
+        
+        <input type="range" orient="vertical" id="scrollSlider" min="0" max="100" value="0">
+        
+        <svg class="arrow-icon" viewBox="0 0 24 24" style="animation-direction: alternate-reverse;"><path d="M12 22l10-10h-6v-10h-8v10h-6z"/></svg>
+        
+        <div class="hand-hint">SCROLL</div>
+    </div>
+
+    <div class="hud">
+        <div class="sub-mission">Missione (Görev)</div>
+        <div class="mission" id="missionText">Yükleniyor...</div>
+    </div>
+
+    <div class="game-wrapper" id="gameWrapper">
+        <div class="game-container" id="gameContainer">
+            <img src="La_stanza_del_detective.png" class="base-image" alt="Dedektif Tablosu">
+            <div class="darkness" id="darkness"></div>
+            <div class="click-grid">
+                <div class="zone"></div><div class="zone" data-id="pietro-ieri"></div><div class="zone" data-id="pietro-dom"></div><div class="zone" data-id="pietro-due"></div><div class="zone" data-id="pietro-gio"></div><div class="zone" data-id="pietro-dic"></div>
+                <div class="zone"></div><div class="zone" data-id="carlo-ieri"></div><div class="zone" data-id="carlo-dom"></div><div class="zone" data-id="carlo-due"></div><div class="zone" data-id="carlo-gio"></div><div class="zone" data-id="carlo-dic"></div>
+                <div class="zone"></div><div class="zone" data-id="daniela-ieri"></div><div class="zone" data-id="daniela-dom"></div><div class="zone" data-id="daniela-due"></div><div class="zone" data-id="daniela-gio"></div><div class="zone" data-id="daniela-dic"></div>
+                <div class="zone"></div><div class="zone" data-id="laura-ieri"></div><div class="zone" data-id="laura-dom"></div><div class="zone" data-id="laura-due"></div><div class="zone" data-id="laura-gio"></div><div class="zone" data-id="laura-dic"></div>
+                <div class="zone"></div><div class="zone" data-id="sofia-ieri"></div><div class="zone" data-id="sofia-dom"></div><div class="zone" data-id="sofia-due"></div><div class="zone" data-id="sofia-gio"></div><div class="zone" data-id="sofia-dic"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h2 style="margin:0 0 15px 0; color:#008C45; font-family:'Playfair Display',serif;">Eccellente!</h2>
+            <p style="margin-bottom:15px;">Ora componi la frase:</p>
+            <div class="sentence-box" id="sentenceBox"></div>
+            <div class="words-container" id="wordsContainer"></div>
+            <div class="error-msg" id="errorMsg"></div>
+            <button class="btn-next" id="nextBtn" onclick="nextLevel()">Prossima Missione</button>
+        </div>
+    </div>
+
+    <script>
+        const darkness = document.getElementById('darkness');
+        const gameContainer = document.getElementById('gameContainer');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const missionText = document.getElementById('missionText');
+        const sentenceBox = document.getElementById('sentenceBox');
+        const wordsContainer = document.getElementById('wordsContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const gameWrapper = document.getElementById('gameWrapper');
+        const scrollSlider = document.getElementById('scrollSlider');
+
+        // --- SCROLL KONTROLÜ ---
+        scrollSlider.addEventListener('input', (e) => {
+            const percentage = e.target.value;
+            const scrollableHeight = gameWrapper.scrollHeight - gameWrapper.clientHeight;
+            gameWrapper.scrollTop = (percentage / 100) * scrollableHeight;
+        });
+
+        gameWrapper.addEventListener('scroll', () => {
+            const scrollableHeight = gameWrapper.scrollHeight - gameWrapper.clientHeight;
+            if(scrollableHeight > 0) {
+                const percentage = (gameWrapper.scrollTop / scrollableHeight) * 100;
+                scrollSlider.value = percentage;
+            }
+        });
+
+        // --- GÖREVLER ---
+        const allLevels = [
+            // PIETRO
+            { id: 'pietro-ieri', text: "Chi ha lavorato al computer ieri sera?", words: ["Pietro", "ha", "lavorato", "al", "computer."] },
+            { id: 'pietro-dom', text: "Chi ha dormito tutto il giorno domenica scorsa?", words: ["Pietro", "ha", "dormito", "tutto", "il", "giorno."] },
+            { id: 'pietro-due', text: "Chi ha ricevuto un pacco due giorni fa?", words: ["Pietro", "ha", "ricevuto", "un", "pacco."] },
+            { id: 'pietro-gio', text: "Chi ha lavato la macchina giovedì scorso?", words: ["Pietro", "ha", "lavato", "la", "macchina."] },
+            { id: 'pietro-dic', text: "Chi ha fatto una telefonata il 31 dicembre?", words: ["Pietro", "ha", "fatto", "gli", "auguri."] },
+
+            // CARLO
+            { id: 'carlo-ieri', text: "Chi ha guardato la TV ieri sera?", words: ["Carlo", "ha", "guardato", "la", "TV."] },
+            { id: 'carlo-dom', text: "Chi ha giocato a calcio domenica scorsa?", words: ["Carlo", "ha", "giocato", "a", "calcio."] },
+            { id: 'carlo-due', text: "Chi ha comprato dei fiori due giorni fa?", words: ["Carlo", "ha", "comprato", "dei", "fiori."] },
+            { id: 'carlo-gio', text: "Chi ha cucinato giovedì scorso?", words: ["Carlo", "ha", "cucinato", "la", "cena."] },
+            { id: 'carlo-dic', text: "Chi ha festeggiato con lo spumante il 31 dicembre?", words: ["Carlo", "ha", "festeggiato", "l'anno", "nuovo."] },
+
+            // DANIELA
+            { id: 'daniela-ieri', text: "Chi ha lavorato in ufficio ieri sera?", words: ["Daniela", "ha", "lavorato", "in", "ufficio."] },
+            { id: 'daniela-dom', text: "Chi ha incontrato gli amici domenica scorsa?", words: ["Daniela", "ha", "incontrato", "gli", "amici."] },
+            { id: 'daniela-due', text: "Chi ha pulito la casa due giorni fa?", words: ["Daniela", "ha", "pulito", "la", "casa."] },
+            { id: 'daniela-gio', text: "Chi ha conosciuto una persona nuova giovedì scorso?", words: ["Daniela", "ha", "conosciuto", "una", "persona."] },
+            { id: 'daniela-dic', text: "Chi è partito per le vacanze il 31 dicembre?", words: ["Daniela", "è", "partita", "per", "le", "vacanze."] },
+
+            // LAURA E PAOLO
+            { id: 'laura-ieri', text: "Chi ha usato il computer insieme ieri sera?", words: ["Laura", "e", "Paolo", "hanno", "lavorato", "insieme."] },
+            { id: 'laura-dom', text: "Chi ha fatto un'escursione in montagna domenica scorsa?", words: ["Laura", "e", "Paolo", "hanno", "fatto", "un'escursione", "in", "montagna."] },
+            { id: 'laura-due', text: "Chi ha portato fuori il cane due giorni fa?", words: ["Laura", "e", "Paolo", "hanno", "portato", "fuori", "il", "cane."] },
+            { id: 'laura-gio', text: "Chi ha visitato un museo/mostra giovedì scorso?", words: ["Laura", "e", "Paolo", "sono", "andati", "a", "vedere", "una", "mostra."] },
+            { id: 'laura-dic', text: "Chi ha ballato tutta la notte il 31 dicembre?", words: ["Laura e Paolo", "hanno", "ballato", "tutta", "la notte","il 31 dicembre"] },
+
+            // SOFIA E MARCELLO
+            { id: 'sofia-ieri', text: "Chi ha fatto una videochiamata ieri sera?", words: ["Sofia e Marcello", "hanno", "fatto", "una", "videochiamata."] },
+            { id: 'sofia-dom', text: "Chi si è riposato sul divano domenica scorsa?", words: ["Sofia e Marcello", "si", "sono", "riposati", "sul", "divano."] },
+            { id: 'sofia-due', text: "Chi ha fatto la spesa due giorni fa?", words: ["Sofia e Marcello", "sono", "andati", "al", "supermercato."] },
+            { id: 'sofia-gio', text: "Chi ha mangiato i popcorn al cinema giovedì scorso?", words: ["Sofia e Marcello", "hanno", "mangiato", "i", "popcorn.", "giovedì scorso"] },
+            { id: 'sofia-dic', text: "Chi ha cenato con gli amici il 31 dicembre?", words: ["Sofia e Marcello", "hanno", "cenato", "con", "gli", "amici."] }
+        ];
+
+        let gameQueue = [];
+        let currentLevelData = null;
+        let builtSentence = [];
+
+        function initGame() {
+            gameQueue = [...allLevels].sort(() => Math.random() - 0.5);
+            loadNextLevel();
+        }
+
+        function loadNextLevel() {
+            if (gameQueue.length === 0) {
+                alert("Oyun Bitti! (Finito)");
+                initGame(); return;
+            }
+            currentLevelData = gameQueue.pop(); 
+            missionText.textContent = currentLevelData.text;
+            modalOverlay.style.display = 'none';
+            document.querySelectorAll('.zone').forEach(z => z.classList.remove('found'));
+            darkness.style.background = getFlashlightStyle(50, 50, true);
+            gameWrapper.scrollTop = 0;
+            scrollSlider.value = 0;
+        }
+
+        function getFlashlightStyle(x, y, isPercent = false) {
+            let size = "35vmax"; 
+            if (isPercent) {
+                return `radial-gradient(circle ${size} at ${x}% ${y}%, transparent 0%, rgba(0,0,0,0.98) 25%, rgba(0,0,0,1) 100%)`;
+            }
+            return `radial-gradient(circle ${size} at ${x}px ${y}px, transparent 0%, rgba(0,0,0,0.98) 25%, rgba(0,0,0,1) 100%)`;
+        }
+
+        function moveLight(clientX, clientY) {
+            const rect = gameContainer.getBoundingClientRect();
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            darkness.style.background = getFlashlightStyle(x, y);
+        }
+
+        gameContainer.addEventListener('mousemove', (e) => moveLight(e.clientX, e.clientY));
+        gameContainer.addEventListener('touchmove', (e) => {
+            e.preventDefault(); 
+            const touch = e.touches[0];
+            moveLight(touch.clientX, touch.clientY - 60);
+        }, { passive: false });
+
+        document.querySelectorAll('.zone').forEach(zone => {
+            zone.addEventListener('click', function() {
+                if(this.classList.contains('found')) return;
+                if(this.dataset.id === currentLevelData.id) {
+                    this.classList.add('found'); 
+                    darkness.style.background = 'transparent'; 
+                    setTimeout(() => startSentenceGame(), 800);
+                } else {
+                    missionText.style.color = '#ff4444';
+                    setTimeout(() => missionText.style.color = '#d4af37', 500);
+                }
+            });
+        });
+
+        function startSentenceGame() {
+            modalOverlay.style.display = 'flex';
+            nextBtn.style.display = 'none';
+            sentenceBox.innerHTML = "";
+            errorMsg.textContent = "";
+            builtSentence = [];
+            const currentWords = [...currentLevelData.words].sort(() => Math.random() - 0.5);
+            wordsContainer.innerHTML = "";
+            currentWords.forEach(word => {
+                const btn = document.createElement('button');
+                btn.className = 'word-btn';
+                btn.textContent = word;
+                btn.onclick = () => selectWord(btn, word);
+                wordsContainer.appendChild(btn);
+            });
+        }
+
+        function selectWord(btn, word) {
+            if (btn.classList.contains('used')) return;
+            const correctOrder = currentLevelData.words;
+            const currentIndex = builtSentence.length;
+            if (word === correctOrder[currentIndex]) {
+                btn.classList.add('used');
+                builtSentence.push(word);
+                const span = document.createElement('span');
+                span.textContent = word + " ";
+                sentenceBox.appendChild(span);
+                errorMsg.textContent = "";
+                if (builtSentence.length === correctOrder.length) {
+                    errorMsg.style.color = "#008C45";
+                    errorMsg.textContent = "BRAVO!";
+                    nextBtn.style.display = 'inline-block';
+                }
+            } else {
+                errorMsg.style.color = "#CD212A";
+                errorMsg.textContent = "Sbagliato!";
+                btn.style.background = "#CD212A";
+                setTimeout(() => btn.style.background = "#1a2c42", 500);
+            }
+        }
+
+        window.nextLevel = function() { loadNextLevel(); }
+        initGame();
+
+    </script>
+</body>
+</html>
