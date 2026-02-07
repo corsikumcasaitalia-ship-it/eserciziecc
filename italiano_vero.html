@@ -57,7 +57,11 @@
     </div>
 
     <script>
-        const API_KEY = "AIzaSyCY4zXJifQH_cuGIVFlpGYBRqezg5woQE0";
+       // Artık anahtarı buraya yazmıyoruz. Linkten okutacağız.
+const urlParams = new URLSearchParams(window.location.search);
+const API_KEY = urlParams.get('key'); 
+
+// Linkte key yoksa Sofia'nın çalışmasını engellemek için startClass içine de check ekleyebilirsin.
         
         // SENİN TEK ÇALIŞAN MODELİN:
         const MODEL = "gemini-robotics-er-1.5-preview"; 
