@@ -186,6 +186,10 @@ REGOLE FINALI:
         }
 
         function startClass() {
+            // EMNİYET KONTROLÜ
+    if (!API_KEY || API_KEY === "" || API_KEY === "null") {
+        alert("Sofia: Mamma mia! Anahtarı linkin sonuna eklemeyi unuttun. Lütfen linki ?key=... şeklinde kullan!");
+        return;
             loadVoices();
             audioCtx.resume();
             document.getElementById('startBtn').style.display = 'none';
