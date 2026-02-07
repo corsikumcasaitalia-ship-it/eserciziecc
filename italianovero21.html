@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>İtalyanca - Robotics Hafızalı</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #212121; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; user-select: none; }
+        .card { background: #333; padding: 30px; border-radius: 20px; width: 500px; height: 850px; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 1px solid #444; position: relative; }
+        
+        .face { font-size: 100px; text-align: center; margin: 10px 0; transition: transform 0.2s; }
+        .speaking { animation: talk 0.3s infinite alternate; }
+        @keyframes talk { from { transform: scale(1); } to { transform: scale(1.15); } }
+
+        .chat-box { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; background: #2b2b2b; border-radius: 15px; margin-bottom: 20px; border: 1px solid #444; scroll-behavior: smooth; }
+        .msg { padding: 12px 20px; border-radius: 20px; max-width: 85%; font-size: 1.1rem; line-height: 1.5; }
+        .teacher { background: #1565c0; color: white; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .user { background: #2e7d32; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .sys { font-size: 0.9rem; color: #888; text-align: center; margin-bottom: 5px; font-style: italic;}
+
+        /* BAŞLAT BUTONU */
+        .start-btn {
+            width: 100%; padding: 15px; font-size: 1.1rem; font-weight: bold; color: white;
+            background: #f57f17; border: none; border-radius: 10px; cursor: pointer;
+            margin-bottom: 15px; transition: 0.2s;
+        }
+        .start-btn:hover { background: #f9a825; }
+
+        /* MİKROFON BUTONU */
+        .toggle-btn {
+            width: 100%; padding: 25px; font-size: 1.3rem; font-weight: bold; color: #eee;
+            background: #424242; border: 3px solid #616161; border-radius: 15px; cursor: not-allowed;
+            transition: all 0.1s; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 5px 0 #212121; position: relative; top: 0; outline: none; opacity: 0.5;
+        }
+        
+        .toggle-btn.ready { cursor: pointer; opacity: 1; background: #424242; border-color: #616161; }
+        .toggle-btn.pre-heat { background: #fbc02d; color: black; border-color: #ffeb3b; cursor: wait; }
+        .toggle-btn.recording { background: #d50000; border-color: #ff1744; color: white; box-shadow: 0 0 25px #d50000; animation: pulse-red 1s infinite; }
+        .toggle-btn.sending { background: #0277bd; border-color: #29b6f6; color: white; cursor: wait; }
+
+        @keyframes pulse-red { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.02); } 100% { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div id="face" class="face">👩‍🏫</div>
+        
+        <button id="startBtn" class="start-btn" onclick="startClass()">TANIŞMAYA BAŞLA</button>
+
+        <div id="chatArea" class="chat-box"></div>
+
+        <button id="micBtn" class="toggle-btn" onclick="toggleMic()">
+            SPACE İLE KONUŞ
+        </button>
+        <div class="sys">Bas (Bekle) -> "DIT" -> Konuş -> Bas (Gönder)</div>
+    </div>
+
+    <script>
+        const API_KEY = "AIzaSyA7_LjeLC8ytEbfwkoP6tm8mvsCfmo9SU0";
+        
+        // SENİN TEK ÇALIŞAN MODELİN:
+        const MODEL = "gemini-robotics-er-1.5-preview"; 
+
+        let recognition;
+        const synth = window.speechSynthesis;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+        
+        let isClassStarted = false;
+        let isRecording = false;    
+        let isProcessing = false;   
+        let fullTranscript = ""; 
+        
+        // HAFIZA (ROBOTICS MODELİ İLE)
+        let chatHistory = [
+            {
+                role: "user",
+                parts: [{ text: `
+                    Sen İtalyanca öğretmenisin. Adın Sofia.
+                    Öğrenciyle yeni tanışıyorsun.
+                    
+                    KURALLAR:
+                    1. Önceki konuşmaları UNUTMA.
+                    2. Cevapların kısa, sıcak ve samimi olsun (Max 2 cümle).
+                    3. Her cevabında sohbeti ilerletecek YENİ bir soru sor.
+                    4. Sadece İtalyanca konuş.
+                ` }]
+            },
+            {
+                role: "model",
+                parts: [{ text: "D'accordo. Cominciamo!" }] 
+            }
+        ];
+
+        let trVoice = null;
+        function loadVoices() {
+            const voices = synth.getVoices();
+            trVoice = voices.find(v => v.lang.includes('it-IT') && v.name.includes('Google')) || 
+                      voices.find(v => v.lang.includes('it-IT')) || 
+                      voices[0];
+        }
+        if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = loadVoices;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !e.repeat && isClassStarted && !isProcessing) {
+                toggleMic();
+            }
+        });
+
+        function playBeep() {
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.type = 'sine';
+            oscillator.frequency.value = 880; 
+            gainNode.gain.value = 0.1;
+            oscillator.start();
+            setTimeout(() => oscillator.stop(), 150); 
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'it-IT';
+            recognition.interimResults = true; 
+            recognition.continuous = true; 
+
+            recognition.onstart = () => {
+                playBeep(); 
+                isRecording = true;
+                fullTranscript = ""; 
+                updateBtn("recording");
+            };
+
+            recognition.onresult = (event) => {
+                let interimCombined = "";
+                for (let i = 0; i < event.results.length; ++i) {
+                    interimCombined += event.results[i][0].transcript + " ";
+                }
+                fullTranscript = interimCombined;
+            };
+
+            recognition.onerror = (e) => { 
+                console.log(e.error);
+                if(e.error === 'no-speech' && isRecording) {
+                    try { recognition.start(); } catch(z){}
+                }
+            };
+            
+            recognition.onend = () => {
+                if (isRecording) {
+                    try { recognition.start(); } catch(e){}
+                } else {
+                    if (fullTranscript.trim().length > 0) {
+                        sendToGemini(fullTranscript);
+                    } else {
+                        updateBtn("idle");
+                    }
+                    fullTranscript = "";
+                }
+            };
+        }
+
+        function startClass() {
+            loadVoices();
+            audioCtx.resume();
+            document.getElementById('startBtn').style.display = 'none';
+            
+            const welcomeMsg = "Ciao! Io sono Sofia. Come ti chiami?";
+            addMsg('teacher', welcomeMsg);
+            
+            chatHistory.push({ role: "model", parts: [{ text: welcomeMsg }] });
+            
+            konus(welcomeMsg, true);
+        }
+
+        function toggleMic() {
+            if (!isClassStarted || isProcessing) return; 
+
+            if (!isRecording) {
+                updateBtn("pre-heat"); 
+                fullTranscript = "";
+                synth.cancel(); 
+                try { recognition.start(); } catch(e){}
+            } else {
+                isRecording = false; 
+                recognition.stop(); 
+                updateBtn("sending");
+            }
+        }
+
+        function updateBtn(state) {
+            const btn = document.getElementById('micBtn');
+            if (state === "pre-heat") {
+                btn.className = "toggle-btn pre-heat";
+                btn.innerText = "HAZIRLANIYOR...";
+            } else if (state === "recording") {
+                btn.className = "toggle-btn recording";
+                btn.innerText = "🎤 DİNLİYORUM... (Konuş)";
+            } else if (state === "sending") {
+                btn.className = "toggle-btn sending";
+                btn.innerText = "BEKLE...";
+            } else {
+                btn.className = "toggle-btn ready";
+                btn.innerText = "SPACE: KONUŞ (BİP'İ BEKLE)";
+            }
+        }
+
+        async function sendToGemini(userText) {
+            isProcessing = true;
+            addMsg('user', userText);
+            
+            // HAFIZAYA EKLE
+            chatHistory.push({ role: "user", parts: [{ text: userText }] });
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: chatHistory 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    addMsg('sys', "Hata: " + data.error.message);
+                } else if (data.candidates) {
+                    const reply = data.candidates[0].content.parts[0].text;
+                    
+                    // CEVABI HAFIZAYA EKLE
+                    chatHistory.push({ role: "model", parts: [{ text: reply }] });
+                    
+                    addMsg('teacher', reply);
+                    konus(reply, false);
+                    return; 
+                }
+
+            } catch (error) {
+                addMsg('sys', "Bağlantı hatası.");
+            }
+            
+            isProcessing = false;
+            updateBtn("idle");
+        }
+
+        function konus(text, isFirst) {
+            const u = new SpeechSynthesisUtterance(text);
+            if(trVoice) u.voice = trVoice;
+            u.lang = 'it-IT';
+            u.rate = 1.0; 
+
+            u.onstart = () => {
+                isProcessing = true;
+                document.getElementById('face').classList.add('speaking');
+            };
+
+            u.onend = () => {
+                document.getElementById('face').classList.remove('speaking');
+                isProcessing = false;
+                updateBtn("idle");
+                if(isFirst) isClassStarted = true;
+            };
+            
+            synth.speak(u);
+        }
+
+        function addMsg(type, text) {
+            const box = document.getElementById('chatArea');
+            const d = document.createElement('div');
+            d.className = `msg ${type}`;
+            d.innerText = text;
+            box.appendChild(d);
+            box.scrollTop = box.scrollHeight;
+        }
+    </script>
+</body>
+</html>
