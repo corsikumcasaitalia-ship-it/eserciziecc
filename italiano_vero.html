@@ -185,22 +185,24 @@ REGOLE FINALI:
             };
         }
 
-        function startClass() {
-            // EMNİYET KONTROLÜ
+     function startClass() {
+    // 1. EMNİYET KONTROLÜ: Anahtar yoksa durdurur ve uyarır
     if (!API_KEY || API_KEY === "" || API_KEY === "null") {
         alert("Sofia: Mamma mia! Anahtarı linkin sonuna eklemeyi unuttun. Lütfen linki ?key=... şeklinde kullan!");
-        return;
-            loadVoices();
-            audioCtx.resume();
-            document.getElementById('startBtn').style.display = 'none';
-            
-            const welcomeMsg = "Ciao! Io sono Sofia. Come ti chiami?";
-            addMsg('teacher', welcomeMsg);
-            
-            chatHistory.push({ role: "model", parts: [{ text: welcomeMsg }] });
-            
-            konus(welcomeMsg, true);
-        }
+        return; 
+    }
+
+    // 2. ANAHTAR VARSA BURADAN DEVAM EDER
+    isClassStarted = true; // Mikrofon kilidini açan kritik satır!
+    loadVoices();
+    audioCtx.resume();
+    document.getElementById('startBtn').style.display = 'none';
+    
+    const welcomeMsg = "Ciao! Io sono Sofia 👋 Come ti chiami?";
+    addMsg('teacher', welcomeMsg);
+    chatHistory.push({ role: "model", parts: [{ text: welcomeMsg }] });
+    konus(welcomeMsg, true);
+}
 
         function toggleMic() {
             if (!isClassStarted || isProcessing) return; 
