@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professoressa Sofia</title>
     <style>
         /* Tasarım kısmında değişiklik yok, aynen kalabilir */
@@ -20,6 +21,7 @@
         .toggle-btn.recording { background: #d50000; border-color: #ff1744; box-shadow: 0 0 25px #d50000; }
         .sys { font-size: 0.8rem; color: #888; text-align: center; margin-top: 5px; }
     </style>
+    <link rel="stylesheet" href="shared.css">
 </head>
 <body>
 
@@ -221,5 +223,6 @@ REGOLE FINALI:
             if (e.code === 'Space' && !e.repeat) toggleMic();
         });
     </script>
+<script src="shared.js"></script>
 </body>
 </html>

@@ -4,89 +4,196 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İtalyanca Alıştırmalar</title>
+    <link rel="stylesheet" href="shared.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf0 100%);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 24px 16px 40px;
         }
-        .menu-container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 400px;
+
+        .hero {
             text-align: center;
+            margin: 32px 0 28px;
         }
-        h1 { color: #2c3e50; margin-bottom: 10px; }
-        p { color: #7f8c8d; margin-bottom: 30px; }
-        
+        .hero h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin: 0 0 6px;
+        }
+        .hero p {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .flag-inline {
+            height: 5px;
+            width: 120px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--it-green) 33.33%, #fff 33.33%, #fff 66.66%, var(--it-red) 66.66%);
+            margin: 12px auto 0;
+            border: 1px solid #ddd;
+        }
+
+        .section-title {
+            width: 100%;
+            max-width: 480px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #95a5a6;
+            margin: 20px 0 8px;
+        }
+
+        .menu-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         .menu-btn {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: #3498db;
-            color: white;
+            padding: 14px 18px;
+            background: #fff;
+            color: #2c3e50;
             text-decoration: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: bold;
-            transition: transform 0.2s, background-color 0.2s;
-            box-sizing: border-box; /* Buton taşmasını engeller */
+            border-radius: 12px;
+            font-size: 0.97rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            border: 1.5px solid transparent;
+            transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
         }
-        .menu-btn:hover {
-            background-color: #2980b9;
-            transform: translateY(-3px);
+        .menu-btn:hover,
+        .menu-btn:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 4px 14px rgba(52,152,219,0.18);
+            transform: translateY(-2px);
+            outline: none;
         }
-        .flag-strip {
-            height: 8px;
-            width: 100%;
-            background: linear-gradient(90deg, #009246 33%, #ffffff 33%, #ffffff 66%, #ce2b37 66%);
-            position: absolute;
-            top: 0;
+        .menu-btn .icon {
+            font-size: 1.4rem;
+            width: 32px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .menu-btn .label {
+            flex: 1;
+        }
+        .menu-btn .arrow {
+            color: #bdc3c7;
+            font-size: 1rem;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: #bdc3c7;
+            font-size: 0.78rem;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="flag-strip"></div>
-    <div class="menu-container">
+    <div class="flag-strip" role="presentation"></div>
+
+    <div class="hero">
         <h1>Benvenuto! 🇮🇹</h1>
         <p>Lütfen çözmek istediğin testi seç:</p>
-
-        <a href="linguaggio_della_classe1.html" class="menu-btn">📝 Comunicazione in Classe</a>
-        
-        <a href="esercizi2.html" class="menu-btn">📝 Test 1: Tempo Presente</a>
-        
-        <a href="ce_cisono.html" class="menu-btn">📍 Test 2: C'è / Ci sono</a>
-
-        <a href="esserci_esercizi.html" class="menu-btn">📍 Esserci > C'è / Ci sono</a>
-
-        <a href="lateliernuovissimo.html" class="menu-btn"> 📧 Atelier Digitale di Scrittura</a>
-        
-        <a href="incertezza_dubbio.html" class="menu-btn"> 🤔 Esprimere Incertezza e Dubbio</a>
-
-         <a href="dedektif_final_v15_tam_ekran.html" class="menu-btn"> 🎃 Indagine al Buio</a>
-
-        <a href="alibi2.html" class="menu-btn"> L'Alibi di Luigi </a>
-
-        <a href="giornata_di_luigi.html" class="menu-btn"> La giornata di Luigi  </a>
-        
-        <a href="musica_al_museo.html" class="menu-btn"> Musica 🎺al Museo 🎶 </a>
-
-        <a href="domande_al_passpross.html" class="menu-btn"> Domande al Passato Prossimo (゜_゜)(。_。)(。_。)</a>
-        
-        <a href="ciao_a_tutti_iniziamo.html" class="menu-btn"> Ciao a tutti!👋 Iniziamo </a>
-        
-        <a href="il_gran_provino.html" class="menu-btn"> Il Grande Provino - Casting Online🎬 </a>
-
-        <a href="italiano_vero.html" class="menu-btn"> Professoressa Sofia </a>
-
+        <div class="flag-inline" aria-hidden="true"></div>
     </div>
+
+    <p class="section-title">Temel Alıştırmalar</p>
+    <nav class="menu-container" aria-label="Egzersiz menüsü">
+        <a href="linguaggio_della_classe1.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">📝</span>
+            <span class="label">Comunicazione in Classe</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="esercizi2.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">📝</span>
+            <span class="label">Test 1: Tempo Presente</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="ce_cisono.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">📍</span>
+            <span class="label">Test 2: C'è / Ci sono</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="esserci_esercizi.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">📍</span>
+            <span class="label">Esserci › C'è / Ci sono</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="incertezza_dubbio.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">🤔</span>
+            <span class="label">Esprimere Incertezza e Dubbio</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="domande_al_passpross.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">📖</span>
+            <span class="label">Domande al Passato Prossimo</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="ciao_a_tutti_iniziamo.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">👋</span>
+            <span class="label">Ciao a tutti! Iniziamo</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+    </nav>
+
+    <p class="section-title">İnteraktif Egzersizler</p>
+    <nav class="menu-container" aria-label="İnteraktif egzersizler">
+        <a href="lateliernuovissimo.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">📧</span>
+            <span class="label">Atelier Digitale di Scrittura</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="alibi2.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">🕵️</span>
+            <span class="label">L'Alibi di Luigi</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="giornata_di_luigi.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">📅</span>
+            <span class="label">La giornata di Luigi</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="musica_al_museo.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">🎺</span>
+            <span class="label">Musica al Museo</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="il_gran_provino.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">🎬</span>
+            <span class="label">Il Grande Provino – Casting Online</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="italiano_vero.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">👩‍🏫</span>
+            <span class="label">Professoressa Sofia</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a href="dedektif_final_v15_tam_ekran.html" class="menu-btn">
+            <span class="icon" aria-hidden="true">🎃</span>
+            <span class="label">Indagine al Buio</span>
+            <span class="arrow" aria-hidden="true">›</span>
+        </a>
+    </nav>
+
+    <footer>
+        &copy; 2025 İtalyanca Alıştırmalar
+    </footer>
 </body>
 </html>

@@ -1,0 +1,236 @@
+/* ===========================================
+   SHARED STYLES - İtalyanca Alıştırmalar
+   Tüm sayfalarda ortak kullanılan stiller
+   =========================================== */
+
+/* --- CSS Değişkenleri --- */
+:root {
+    --it-green:  #008C45;
+    --it-white:  #ffffff;
+    --it-red:    #CD212A;
+
+    --color-primary:    #3498db;
+    --color-primary-dk: #2980b9;
+    --color-success:    #27ae60;
+    --color-success-lt: #d4edda;
+    --color-danger:     #e74c3c;
+    --color-danger-lt:  #f8d7da;
+    --color-text:       #2c3e50;
+    --color-muted:      #7f8c8d;
+    --color-bg:         #f0f2f5;
+    --color-card-bg:    #ffffff;
+    --color-border:     #bdc3c7;
+    --color-hover-bg:   #eafaf1;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 15px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+/* --- Sıfırlama --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* --- Geri Dönüş Butonu --- */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 9999;
+    background: rgba(255,255,255,0.92);
+    color: var(--color-text);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: var(--shadow-md);
+    border: 1.5px solid var(--color-border);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+.back-btn:hover,
+.back-btn:focus {
+    background: #fff;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+.back-btn::before {
+    content: '←';
+    font-size: 1rem;
+}
+
+/* --- İtalyan Bayrak Şeridi --- */
+.flag-strip {
+    height: 6px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--it-green) 33.33%, var(--it-white) 33.33%, var(--it-white) 66.66%, var(--it-red) 66.66%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* --- Ortak Buton Stilleri --- */
+.btn {
+    display: inline-block;
+    padding: 10px 24px;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    text-decoration: none;
+    text-align: center;
+}
+.btn:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+.btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+}
+.btn-primary:hover:not([disabled]) {
+    background: var(--color-primary-dk);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+.btn-success {
+    background: var(--color-success);
+    color: #fff;
+}
+.btn-success:hover:not([disabled]) {
+    background: #219a52;
+    transform: translateY(-2px);
+}
+.btn[disabled], .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* --- Quiz Seçenek Butonları --- */
+.option-btn {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid var(--color-border);
+    background: var(--color-card-bg);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: left;
+    transition: all 0.18s;
+    color: var(--color-text);
+    font-family: inherit;
+}
+.option-btn:hover:not([disabled]) {
+    background: var(--color-hover-bg);
+    border-color: var(--color-success);
+    transform: translateY(-1px);
+}
+.option-btn:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+.option-btn.correct {
+    background: var(--color-success-lt);
+    border-color: var(--color-success);
+    color: #155724;
+    font-weight: 700;
+}
+.option-btn.wrong {
+    background: var(--color-danger-lt);
+    border-color: var(--color-danger);
+    color: #721c24;
+    opacity: 0.75;
+}
+
+/* --- Kart / Container --- */
+.card {
+    background: var(--color-card-bg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+/* --- Skor Rozeti (sabit) --- */
+.score-badge {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.9rem;
+    box-shadow: var(--shadow-md);
+    z-index: 9000;
+}
+
+/* --- Animasyonlar --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pop {
+    0%   { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+@keyframes celebrate {
+    0%, 100% { transform: rotate(0deg); }
+    25%       { transform: rotate(-4deg) scale(1.05); }
+    75%       { transform: rotate(4deg) scale(1.05); }
+}
+
+.animate-fade  { animation: fadeIn 0.4s ease both; }
+.animate-pop   { animation: pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+.animate-celebrate { animation: celebrate 0.5s ease; }
+
+/* --- Mobil Genel Düzeltmeler --- */
+@media (max-width: 600px) {
+    .back-btn {
+        top: 10px;
+        left: 10px;
+        padding: 7px 12px;
+        font-size: 0.8rem;
+    }
+
+    /* Çok sütunlu grid'leri tek sütuna düşür */
+    .grid-2col {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* --- Erişilebilirlik: Odak Göstergeleri --- */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* --- Doğru/Yanlış Metin Etiketleri (renk körü desteği) --- */
+.answer-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-left: 6px;
+}
+.correct .answer-label::after  { content: ' ✓ Corretto'; }
+.wrong   .answer-label::after  { content: ' ✗ Sbagliato'; }

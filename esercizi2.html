@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İtalyanca Geniş Kapsamlı Test (Tüm Sorular)</title>
+    <link rel="stylesheet" href="shared.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -301,6 +302,19 @@
         // Başlat
         initQuiz();
 
+        // Klavye navigasyonu (1-4 tuşları ile seçim, Enter ile ileri)
+        document.addEventListener('keydown', function(e) {
+            const num = parseInt(e.key);
+            if (num >= 1 && num <= 4) {
+                const btns = document.querySelectorAll('#options-container .option-btn');
+                if (btns[num - 1] && !btns[num - 1].disabled) btns[num - 1].click();
+            }
+            if ((e.key === 'Enter' || e.key === ' ') && document.getElementById('next-btn').style.display !== 'none') {
+                e.preventDefault();
+                document.getElementById('next-btn').click();
+            }
+        });
     </script>
+<script src="shared.js"></script>
 </body>
 </html>

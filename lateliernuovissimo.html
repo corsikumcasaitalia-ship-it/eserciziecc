@@ -140,6 +140,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="shared.css">
 </head>
 <body>
 
@@ -478,13 +479,19 @@
         pre.style.display = "block";
         
         // Burada si.value yerine artık finalGreeting kullanıyoruz
-        pre.innerHTML = "<b>Mittente:</b> " + document.getElementById('efrom').value + 
-                        "\n<b>Destinatario:</b> " + document.getElementById('eto').value + 
-                        "\n<b>Oggetto:</b> " + document.getElementById('eobj').value + 
-                        "\n\n" + finalGreeting + ",\n\n" + 
-                        document.getElementById('ebody').value + "\n\n" + 
-                        sf.value + ",\n" + 
-                        document.getElementById('efrom').value;
+        // escapeHtml kullanılarak XSS koruması sağlanıyor
+        var _e = function(s) {
+            return String(s)
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+        };
+        pre.innerHTML = "<b>Mittente:</b> " + _e(document.getElementById('efrom').value) +
+                        "\n<b>Destinatario:</b> " + _e(document.getElementById('eto').value) +
+                        "\n<b>Oggetto:</b> " + _e(document.getElementById('eobj').value) +
+                        "\n\n" + _e(finalGreeting) + ",\n\n" +
+                        _e(document.getElementById('ebody').value) + "\n\n" +
+                        _e(sf.value) + ",\n" +
+                        _e(document.getElementById('efrom').value);
                         
         pre.scrollIntoView({behavior: "smooth"});
     }
@@ -497,7 +504,8 @@
     var d = document.getElementById('wa-dis');
     
     // Kullanıcının mesajını ekrana bas
-    d.innerHTML += '<div class="bubble mine">' + i.value + '</div>';
+    var _esc = function(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+    d.innerHTML += '<div class="bubble mine">' + _esc(i.value) + '</div>';
     i.value = "";
     d.scrollTop = d.scrollHeight;
 
@@ -724,5 +732,6 @@ function parolaGiorno_A1_B1() {
     d.scrollTop = d.scrollHeight;
 }
 </script>
+<script src="shared.js"></script>
 </body>
 </html>
