@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş — İtalyanca Alıştırmalar</title>
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf0 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            animation: fadeIn 0.5s ease both;
+        }
+
+        .flag-bar {
+            height: 5px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--it-green) 33.33%, #fff 33.33%, #fff 66.66%, var(--it-red) 66.66%);
+            border: 1px solid #ddd;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin: 0 0 4px;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: #95a5a6;
+            margin: 0 0 28px;
+        }
+
+        .input-wrap {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-wrap input[type="password"],
+        .input-wrap input[type="text"] {
+            width: 100%;
+            padding: 14px 48px 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+            font-family: inherit;
+            letter-spacing: 0.08em;
+        }
+
+        .input-wrap input:focus {
+            border-color: var(--color-primary);
+        }
+
+        .input-wrap.error input {
+            border-color: var(--color-danger);
+            animation: shake 0.4s ease;
+        }
+
+        .toggle-eye {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #aaa;
+            padding: 4px;
+            line-height: 1;
+        }
+        .toggle-eye:focus {
+            outline: 2px solid var(--color-primary);
+            border-radius: 4px;
+        }
+
+        .error-msg {
+            color: var(--color-danger);
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin: -8px 0 12px;
+            display: none;
+        }
+        .error-msg.show { display: block; }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--it-green);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            font-family: inherit;
+        }
+        .login-btn:hover {
+            background: #007038;
+            transform: translateY(-1px);
+        }
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        .login-btn:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 3px;
+        }
+
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--it-green);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'Segoe UI', sans-serif;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s;
+            z-index: 9999;
+        }
+        .success-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .success-overlay .checkmark {
+            font-size: 3.5rem;
+            margin-bottom: 12px;
+            animation: pop 0.4s ease both;
+        }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%      { transform: translateX(-8px); }
+            40%      { transform: translateX(8px); }
+            60%      { transform: translateX(-6px); }
+            80%      { transform: translateX(6px); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-box" role="main">
+    <div class="flag-bar" aria-hidden="true"></div>
+    <div class="logo" aria-hidden="true">🇮🇹</div>
+    <h1 id="site-title">İtalyanca Alıştırmalar</h1>
+    <p class="subtitle">Devam etmek için şifreyi gir</p>
+
+    <form id="login-form" novalidate>
+        <div class="input-wrap" id="input-wrap">
+            <label for="password-input" class="sr-only">Şifre</label>
+            <input
+                type="password"
+                id="password-input"
+                autocomplete="current-password"
+                placeholder="Şifre"
+                aria-label="Şifre"
+                aria-describedby="error-msg"
+                autofocus
+            >
+            <button type="button" class="toggle-eye" id="toggle-eye" aria-label="Şifreyi göster/gizle" title="Göster/Gizle">👁</button>
+        </div>
+        <p class="error-msg" id="error-msg" role="alert">Yanlış şifre. Tekrar dene.</p>
+
+        <button type="submit" class="login-btn">Giriş Yap</button>
+    </form>
+</div>
+
+<!-- Başarı animasyonu -->
+<div class="success-overlay" id="success-overlay" aria-hidden="true">
+    <div class="checkmark">✓</div>
+    <div>Benvenuto!</div>
+</div>
+
+<script src="config.js"></script>
+<script>
+(function () {
+    // Sayfa başlığını config'den al
+    if (typeof SITE_CONFIG !== 'undefined') {
+        document.getElementById('site-title').textContent = SITE_CONFIG.SITE_TITLE;
+        document.title = 'Giriş — ' + SITE_CONFIG.SITE_TITLE;
+    }
+
+    // Zaten oturum açıksa direkt yönlendir
+    if (isAuthenticated()) {
+        window.location.replace('index.html');
+        return;
+    }
+
+    var form      = document.getElementById('login-form');
+    var input     = document.getElementById('password-input');
+    var errorMsg  = document.getElementById('error-msg');
+    var inputWrap = document.getElementById('input-wrap');
+    var toggleBtn = document.getElementById('toggle-eye');
+    var overlay   = document.getElementById('success-overlay');
+
+    // Göz ikonu — şifreyi göster/gizle
+    toggleBtn.addEventListener('click', function () {
+        var isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+        toggleBtn.textContent = isHidden ? '🙈' : '👁';
+        toggleBtn.setAttribute('aria-label', isHidden ? 'Şifreyi gizle' : 'Şifreyi göster');
+        input.focus();
+    });
+
+    // Form gönderme
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var entered = input.value;
+        var correct = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG.SITE_PASSWORD : '';
+
+        if (entered === correct) {
+            // Oturumu kaydet
+            var hours   = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG.SESSION_HOURS : 8;
+            var expires = Date.now() + hours * 60 * 60 * 1000;
+            sessionStorage.setItem('auth_token', 'ok');
+            sessionStorage.setItem('auth_expires', expires);
+
+            // Başarı animasyonu → yönlendir
+            overlay.setAttribute('aria-hidden', 'false');
+            overlay.classList.add('show');
+            setTimeout(function () {
+                window.location.replace('index.html');
+            }, 900);
+        } else {
+            // Hata göster
+            inputWrap.classList.add('error');
+            errorMsg.classList.add('show');
+            input.value = '';
+            input.focus();
+            setTimeout(function () {
+                inputWrap.classList.remove('error');
+            }, 450);
+        }
+    });
+
+    // Herhangi bir tuşa basınca hatayı kaldır
+    input.addEventListener('input', function () {
+        errorMsg.classList.remove('show');
+        inputWrap.classList.remove('error');
+    });
+
+    function isAuthenticated() {
+        var token   = sessionStorage.getItem('auth_token');
+        var expires = parseInt(sessionStorage.getItem('auth_expires') || '0', 10);
+        return token === 'ok' && Date.now() < expires;
+    }
+})();
+</script>
+</body>
+</html>

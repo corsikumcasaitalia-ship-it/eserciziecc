@@ -194,6 +194,26 @@
 
     <footer>
         &copy; 2025 İtalyanca Alıştırmalar
+        &nbsp;·&nbsp;
+        <button onclick="logout()" style="background:none;border:none;color:#bdc3c7;font-size:0.78rem;cursor:pointer;padding:0;font-family:inherit;" aria-label="Oturumu kapat">Çıkış Yap</button>
     </footer>
+
+<script src="config.js"></script>
+<script>
+// index.html'de oturum kontrolü
+(function() {
+    var token   = sessionStorage.getItem('auth_token');
+    var expires = parseInt(sessionStorage.getItem('auth_expires') || '0', 10);
+    if (token !== 'ok' || Date.now() >= expires) {
+        window.location.replace('login.html');
+    }
+})();
+
+function logout() {
+    sessionStorage.removeItem('auth_token');
+    sessionStorage.removeItem('auth_expires');
+    window.location.replace('login.html');
+}
+</script>
 </body>
 </html>

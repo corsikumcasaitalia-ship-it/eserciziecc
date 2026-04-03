@@ -3,6 +3,26 @@
  */
 
 /* -------------------------------------------------------
+   0. Oturum Kontrolü
+   login.html hariç tüm sayfalarda oturum geçerliliği
+   kontrol edilir; geçersizse login.html'e yönlendirir.
+------------------------------------------------------- */
+(function checkAuth() {
+    var path = window.location.pathname;
+    // login.html ve index.html'de bu kontrolü yapma (index kendi kontrolünü yapıyor)
+    if (path.endsWith('login.html') || path.endsWith('index.html') ||
+        path === '/' || path.endsWith('/')) return;
+
+    var token   = sessionStorage.getItem('auth_token');
+    var expires = parseInt(sessionStorage.getItem('auth_expires') || '0', 10);
+    var ok      = token === 'ok' && Date.now() < expires;
+
+    if (!ok) {
+        window.location.replace('login.html');
+    }
+})();
+
+/* -------------------------------------------------------
    1. Otomatik Geri Dönüş Butonu
    index.html hariç tüm sayfalara otomatik eklenir.
 ------------------------------------------------------- */
