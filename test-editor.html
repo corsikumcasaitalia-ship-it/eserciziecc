@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Yönetici — Seviye Tespit Sınavı</title>
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            padding: 24px 16px 80px;
+        }
+        .wrap {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin: 36px 0 4px;
+        }
+        .page-subtitle {
+            color: var(--color-muted);
+            font-size: 0.88rem;
+            margin: 0 0 20px;
+        }
+
+        /* --- Üst Bar --- */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .toolbar .btn {
+            font-size: 0.82rem;
+            padding: 9px 16px;
+        }
+        .btn-outline {
+            background: #fff;
+            color: var(--color-text);
+            border: 1.5px solid var(--color-border);
+        }
+        .btn-outline:hover { background: #f5f5f5; }
+        .btn-danger-outline {
+            background: #fff;
+            color: var(--color-danger);
+            border: 1.5px solid var(--color-danger);
+        }
+        .btn-danger-outline:hover { background: var(--color-danger-lt); }
+
+        #save-indicator {
+            font-size: 0.8rem;
+            color: var(--color-success);
+            font-weight: 700;
+            align-self: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            margin-left: auto;
+        }
+        #save-indicator.show { opacity: 1; }
+
+        /* --- Genel Ayarlar --- */
+        .settings-card label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin: 12px 0 4px;
+        }
+        .settings-card label:first-child { margin-top: 0; }
+        .settings-card input[type="text"],
+        .settings-card textarea,
+        .settings-card input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .settings-card input:focus, .settings-card textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        .settings-card textarea { resize: vertical; min-height: 54px; }
+        .settings-card .row { display: flex; gap: 16px; align-items: flex-end; }
+        .settings-card .row > div { flex: 1; }
+        .settings-card .hint { font-size: 0.76rem; color: var(--color-muted); margin-top: 4px; }
+
+        /* --- Bölümler --- */
+        .section-card {
+            border-left: 5px solid var(--color-primary);
+        }
+        .section-head {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .section-head select {
+            padding: 8px 10px;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.85rem;
+            font-family: inherit;
+            flex-shrink: 0;
+        }
+        .section-head input[type="text"] {
+            flex: 1;
+            min-width: 140px;
+            padding: 9px 12px;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: inherit;
+        }
+        .section-head input:focus, .section-head select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        .icon-btn {
+            background: none;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--color-text);
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .icon-btn:hover:not([disabled]) { background: #f0f0f0; }
+        .icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .icon-btn.danger { color: var(--color-danger); border-color: var(--color-danger); }
+        .icon-btn.danger:hover { background: var(--color-danger-lt); }
+
+        .question-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: var(--color-bg);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+        }
+        .question-row .q-num {
+            font-weight: 700;
+            color: var(--color-muted);
+            font-size: 0.82rem;
+            width: 22px;
+            flex-shrink: 0;
+        }
+        .question-row .q-preview {
+            flex: 1;
+            font-size: 0.9rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .question-row .q-actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .empty-note {
+            color: var(--color-muted);
+            font-size: 0.85rem;
+            font-style: italic;
+            padding: 6px 2px 4px;
+        }
+
+        .add-question-btn {
+            margin-top: 4px;
+            font-size: 0.85rem;
+            padding: 9px 14px;
+        }
+
+        #sections-empty {
+            text-align: center;
+            color: var(--color-muted);
+            padding: 40px 20px;
+        }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 16px;
+            overflow-y: auto;
+            z-index: 10000;
+        }
+        /* Not: görünürlük "hidden" özniteliği yerine .show sınıfıyla
+           yönetiliyor — [hidden] ile aynı özgüllükteki .modal-overlay
+           display kuralı, kaynak sırası yüzünden [hidden]'ı geçersiz
+           kılabiliyordu. */
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 26px 24px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: var(--shadow-lg);
+            animation: pop 0.25s ease both;
+        }
+        .modal-box h3 { margin: 0 0 4px; font-size: 1.15rem; }
+        .modal-box .modal-hint { font-size: 0.8rem; color: var(--color-muted); margin: 0 0 18px; }
+        .modal-box label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin: 14px 0 5px;
+        }
+        .modal-box label:first-of-type { margin-top: 0; }
+        .modal-box textarea, .modal-box input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .modal-box textarea:focus, .modal-box input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        #options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .option-row input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            accent-color: var(--color-success);
+        }
+        .option-row input[type="text"] { flex: 1; }
+        .option-row .remove-opt-btn {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: none;
+            cursor: pointer;
+            color: var(--color-danger);
+        }
+        .option-row .remove-opt-btn:hover:not([disabled]) { background: var(--color-danger-lt); }
+        .option-row .remove-opt-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        #add-option-btn {
+            margin-top: 10px;
+            font-size: 0.82rem;
+            padding: 7px 14px;
+        }
+        .modal-error {
+            color: var(--color-danger);
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+        }
+        .modal-error.show { display: block; }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        #import-file-input { display: none; }
+        .sr-only {
+            position: absolute; width: 1px; height: 1px;
+            padding: 0; margin: -1px; overflow: hidden;
+            clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="flag-strip" role="presentation"></div>
+
+    <div class="wrap">
+        <h1>🛠️ Test Yönetici</h1>
+        <p class="page-subtitle">Seviye Tespit Sınavı'nın bölümlerini ve sorularını buradan düzenle. Değişiklikler otomatik olarak kaydedilir.</p>
+
+        <div class="toolbar">
+            <button class="btn btn-outline" onclick="handleExport()">⬇️ Dışa Aktar (JSON)</button>
+            <button class="btn btn-outline" onclick="document.getElementById('import-file-input').click()">⬆️ İçe Aktar</button>
+            <input type="file" id="import-file-input" accept="application/json,.json" onchange="handleImportFile(event)">
+            <a class="btn btn-outline" href="seviye_tespit_sinavi.html" target="_blank" rel="noopener">👁️ Önizle</a>
+            <button class="btn btn-danger-outline" onclick="handleResetToDefaults()">↺ Varsayılana Sıfırla</button>
+            <span id="save-indicator">✓ Kaydedildi</span>
+        </div>
+
+        <div class="card settings-card">
+            <label for="exam-title-input">Sınav Başlığı</label>
+            <input type="text" id="exam-title-input" oninput="updateMeta('title', this.value)">
+
+            <label for="exam-desc-input">Açıklama (öğrenciye gösterilir)</label>
+            <textarea id="exam-desc-input" oninput="updateMeta('description', this.value)"></textarea>
+
+            <div class="row">
+                <div>
+                    <label for="pass-threshold-input">Geçme Yüzdesi (%)</label>
+                    <input type="number" id="pass-threshold-input" min="0" max="100" oninput="updateMeta('passThreshold', Number(this.value))">
+                    <p class="hint">Bir öğrenci bir bölümden bu yüzdenin altında puan alırsa, sınav orada durur ve bir üst seviyeye geçilmez.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="font-size:1.1rem;margin:28px 0 4px;">Bölümler</h2>
+        <p class="page-subtitle">Bölümler öğrenciye burada listelendiği sırayla, kolaydan zora gösterilir.</p>
+
+        <div id="sections-container"></div>
+        <div id="sections-empty" style="display:none;">Henüz bölüm eklenmedi. Aşağıdaki butonla ilk bölümü oluştur.</div>
+
+        <button class="btn btn-success" style="margin-top:12px;" onclick="addSection()">+ Yeni Bölüm Ekle</button>
+    </div>
+
+    <!-- Soru Ekle/Düzenle Modalı -->
+    <div class="modal-overlay" id="question-modal">
+        <div class="modal-box">
+            <h3 id="modal-title">Soru Ekle</h3>
+            <p class="modal-hint">Doğru cevabı işaretlemeyi unutma.</p>
+
+            <label for="q-text-input">Soru Metni</label>
+            <textarea id="q-text-input" rows="2" placeholder="Örn: Come ti chiami?"></textarea>
+
+            <label id="options-label">Seçenekler (doğru olanı işaretle)</label>
+            <div id="options-list"></div>
+            <button type="button" class="btn btn-outline" id="add-option-btn" onclick="addOption()">+ Seçenek Ekle</button>
+
+            <p class="modal-error" id="modal-error"></p>
+
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeQuestionModal()">İptal</button>
+                <button class="btn btn-primary" onclick="saveQuestion()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="seviye_tespit_data.js"></script>
+    <script>
+        const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+        let state = loadTestData();
+        let draft = null;          // modalda düzenlenen sorunun taslağı
+        let draftSectionId = null; // taslağın ait olduğu bölüm
+        let draftQuestionId = null; // düzenleniyorsa mevcut sorunun id'si, yeniyse null
+
+        /* ------------------------------------------------------- */
+        /* Genel kaydetme + geri bildirim                          */
+        /* ------------------------------------------------------- */
+        let saveIndicatorTimer = null;
+        function persist() {
+            saveTestData(state);
+            const el = document.getElementById('save-indicator');
+            el.classList.add('show');
+            clearTimeout(saveIndicatorTimer);
+            saveIndicatorTimer = setTimeout(() => el.classList.remove('show'), 1400);
+        }
+
+        /* ------------------------------------------------------- */
+        /* Üst ayarlar (başlık / açıklama / geçme yüzdesi)          */
+        /* ------------------------------------------------------- */
+        function updateMeta(field, value) {
+            state[field] = value;
+            persist();
+        }
+
+        function fillMetaInputs() {
+            document.getElementById('exam-title-input').value = state.title || '';
+            document.getElementById('exam-desc-input').value = state.description || '';
+            document.getElementById('pass-threshold-input').value =
+                (typeof state.passThreshold === 'number') ? state.passThreshold : 60;
+        }
+
+        /* ------------------------------------------------------- */
+        /* Bölüm işlemleri                                         */
+        /* ------------------------------------------------------- */
+        function addSection() {
+            state.sections.push({
+                id: generateId('s'),
+                level: 'A1',
+                title: 'Yeni Bölüm',
+                questions: []
+            });
+            persist();
+            renderSections();
+        }
+
+        function updateSectionTitle(sectionId, value) {
+            const s = state.sections.find(s => s.id === sectionId);
+            if (s) { s.title = value; persist(); }
+        }
+
+        function updateSectionLevel(sectionId, value) {
+            const s = state.sections.find(s => s.id === sectionId);
+            if (s) { s.level = value; persist(); }
+        }
+
+        function moveSection(sectionId, dir) {
+            const idx = state.sections.findIndex(s => s.id === sectionId);
+            const swapWith = idx + dir;
+            if (idx < 0 || swapWith < 0 || swapWith >= state.sections.length) return;
+            const tmp = state.sections[idx];
+            state.sections[idx] = state.sections[swapWith];
+            state.sections[swapWith] = tmp;
+            persist();
+            renderSections();
+        }
+
+        function deleteSection(sectionId) {
+            const s = state.sections.find(s => s.id === sectionId);
+            if (!s) return;
+            if (!confirm(`"${s.title}" bölümünü ve içindeki ${s.questions.length} soruyu silmek istediğine emin misin?`)) return;
+            state.sections = state.sections.filter(s => s.id !== sectionId);
+            persist();
+            renderSections();
+        }
+
+        /* ------------------------------------------------------- */
+        /* Soru işlemleri (liste seviyesi)                          */
+        /* ------------------------------------------------------- */
+        function moveQuestion(sectionId, questionId, dir) {
+            const s = state.sections.find(s => s.id === sectionId);
+            if (!s) return;
+            const idx = s.questions.findIndex(q => q.id === questionId);
+            const swapWith = idx + dir;
+            if (idx < 0 || swapWith < 0 || swapWith >= s.questions.length) return;
+            const tmp = s.questions[idx];
+            s.questions[idx] = s.questions[swapWith];
+            s.questions[swapWith] = tmp;
+            persist();
+            renderSections();
+        }
+
+        function deleteQuestion(sectionId, questionId) {
+            const s = state.sections.find(s => s.id === sectionId);
+            if (!s) return;
+            if (!confirm('Bu soruyu silmek istediğine emin misin?')) return;
+            s.questions = s.questions.filter(q => q.id !== questionId);
+            persist();
+            renderSections();
+        }
+
+        /* ------------------------------------------------------- */
+        /* Soru Modalı                                              */
+        /* ------------------------------------------------------- */
+        function openQuestionModal(sectionId, questionId) {
+            draftSectionId = sectionId;
+            draftQuestionId = questionId || null;
+
+            if (questionId) {
+                const s = state.sections.find(s => s.id === sectionId);
+                const q = s.questions.find(q => q.id === questionId);
+                draft = { text: q.text, options: [...q.options], correct: q.correct };
+                document.getElementById('modal-title').textContent = 'Soruyu Düzenle';
+            } else {
+                draft = { text: '', options: ['', ''], correct: 0 };
+                document.getElementById('modal-title').textContent = 'Soru Ekle';
+            }
+
+            document.getElementById('q-text-input').value = draft.text;
+            document.getElementById('modal-error').classList.remove('show');
+            renderOptionsList();
+            document.getElementById('question-modal').classList.add('show');
+            document.getElementById('q-text-input').focus();
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('question-modal').classList.remove('show');
+            draft = null;
+            draftSectionId = null;
+            draftQuestionId = null;
+        }
+
+        function renderOptionsList() {
+            const container = document.getElementById('options-list');
+            container.innerHTML = draft.options.map((opt, i) => `
+                <div class="option-row">
+                    <input type="radio" name="correct-option" ${i === draft.correct ? 'checked' : ''}
+                           onchange="draft.correct = ${i}" aria-label="Doğru cevap olarak işaretle">
+                    <input type="text" value="${escapeAttr(opt)}" placeholder="Seçenek ${i + 1}"
+                           oninput="draft.options[${i}] = this.value">
+                    <button type="button" class="remove-opt-btn" onclick="removeOption(${i})"
+                            ${draft.options.length <= 2 ? 'disabled' : ''} aria-label="Seçeneği sil">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function addOption() {
+            syncOptionTextsFromDOM();
+            if (draft.options.length >= 6) return;
+            draft.options.push('');
+            renderOptionsList();
+        }
+
+        function removeOption(idx) {
+            syncOptionTextsFromDOM();
+            if (draft.options.length <= 2) return;
+            draft.options.splice(idx, 1);
+            if (draft.correct === idx) {
+                draft.correct = 0;
+            } else if (draft.correct > idx) {
+                draft.correct -= 1;
+            }
+            renderOptionsList();
+        }
+
+        // Radio/onchange ve oninput zaten draft'ı canlı güncelliyor;
+        // yine de yapısal bir değişiklikten (ekle/sil) hemen önce DOM'daki
+        // güncel metinlerin draft'a yansıdığından emin ol.
+        function syncOptionTextsFromDOM() {
+            const inputs = document.querySelectorAll('#options-list input[type="text"]');
+            inputs.forEach((input, i) => { if (draft.options[i] !== undefined) draft.options[i] = input.value; });
+        }
+
+        function saveQuestion() {
+            draft.text = document.getElementById('q-text-input').value.trim();
+            syncOptionTextsFromDOM();
+            draft.options = draft.options.map(o => o.trim());
+
+            const errEl = document.getElementById('modal-error');
+            const filledOptions = draft.options.filter(o => o.length > 0);
+
+            if (!draft.text) {
+                return showModalError('Soru metni boş olamaz.');
+            }
+            if (filledOptions.length < 2) {
+                return showModalError('En az 2 seçenek girmelisin.');
+            }
+            if (!draft.options[draft.correct] || draft.options[draft.correct].length === 0) {
+                return showModalError('Doğru cevap olarak işaretlenen seçenek boş olamaz.');
+            }
+
+            const s = state.sections.find(s => s.id === draftSectionId);
+            if (draftQuestionId) {
+                const q = s.questions.find(q => q.id === draftQuestionId);
+                q.text = draft.text;
+                q.options = draft.options;
+                q.correct = draft.correct;
+            } else {
+                s.questions.push({
+                    id: generateId('q'),
+                    text: draft.text,
+                    options: draft.options,
+                    correct: draft.correct
+                });
+            }
+            persist();
+            closeQuestionModal();
+            renderSections();
+        }
+
+        function showModalError(msg) {
+            const errEl = document.getElementById('modal-error');
+            errEl.textContent = msg;
+            errEl.classList.add('show');
+        }
+
+        function escapeAttr(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        /* ------------------------------------------------------- */
+        /* Ana render                                               */
+        /* ------------------------------------------------------- */
+        function renderSections() {
+            const container = document.getElementById('sections-container');
+            const emptyEl = document.getElementById('sections-empty');
+
+            if (state.sections.length === 0) {
+                container.innerHTML = '';
+                emptyEl.style.display = 'block';
+                return;
+            }
+            emptyEl.style.display = 'none';
+
+            container.innerHTML = state.sections.map((section, sIdx) => `
+                <div class="card section-card">
+                    <div class="section-head">
+                        <select onchange="updateSectionLevel('${section.id}', this.value)" aria-label="Seviye">
+                            ${LEVELS.map(l => `<option value="${l}" ${l === section.level ? 'selected' : ''}>${l}</option>`).join('')}
+                        </select>
+                        <input type="text" value="${escapeAttr(section.title)}"
+                               oninput="updateSectionTitle('${section.id}', this.value)" aria-label="Bölüm başlığı">
+                        <button class="icon-btn" onclick="moveSection('${section.id}', -1)" ${sIdx === 0 ? 'disabled' : ''} title="Yukarı taşı" aria-label="Bölümü yukarı taşı">↑</button>
+                        <button class="icon-btn" onclick="moveSection('${section.id}', 1)" ${sIdx === state.sections.length - 1 ? 'disabled' : ''} title="Aşağı taşı" aria-label="Bölümü aşağı taşı">↓</button>
+                        <button class="icon-btn danger" onclick="deleteSection('${section.id}')" title="Bölümü sil" aria-label="Bölümü sil">🗑</button>
+                    </div>
+
+                    ${section.questions.length === 0
+                        ? '<p class="empty-note">Bu bölümde henüz soru yok.</p>'
+                        : section.questions.map((q, qIdx) => `
+                            <div class="question-row">
+                                <span class="q-num">${qIdx + 1}.</span>
+                                <span class="q-preview">${escapeAttr(q.text)}</span>
+                                <div class="q-actions">
+                                    <button class="icon-btn" onclick="moveQuestion('${section.id}', '${q.id}', -1)" ${qIdx === 0 ? 'disabled' : ''} title="Yukarı taşı" aria-label="Soruyu yukarı taşı">↑</button>
+                                    <button class="icon-btn" onclick="moveQuestion('${section.id}', '${q.id}', 1)" ${qIdx === section.questions.length - 1 ? 'disabled' : ''} title="Aşağı taşı" aria-label="Soruyu aşağı taşı">↓</button>
+                                    <button class="icon-btn" onclick="openQuestionModal('${section.id}', '${q.id}')" title="Düzenle" aria-label="Soruyu düzenle">✎</button>
+                                    <button class="icon-btn danger" onclick="deleteQuestion('${section.id}', '${q.id}')" title="Sil" aria-label="Soruyu sil">🗑</button>
+                                </div>
+                            </div>
+                        `).join('')
+                    }
+
+                    <button class="btn btn-outline add-question-btn" onclick="openQuestionModal('${section.id}')">+ Soru Ekle</button>
+                </div>
+            `).join('');
+        }
+
+        /* ------------------------------------------------------- */
+        /* Dışa/İçe Aktar & Sıfırlama                               */
+        /* ------------------------------------------------------- */
+        function handleExport() {
+            exportTestData(state);
+        }
+
+        function handleImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            importTestDataFromFile(file, function (parsed) {
+                if (!confirm('Mevcut sınav verisinin üzerine yazılacak. Devam edilsin mi?')) {
+                    event.target.value = '';
+                    return;
+                }
+                state = parsed;
+                if (typeof state.passThreshold !== 'number') state.passThreshold = 60;
+                persist();
+                fillMetaInputs();
+                renderSections();
+                event.target.value = '';
+                showToast('Sınav verisi içe aktarıldı.', 'success');
+            }, function (err) {
+                alert('İçe aktarma başarısız: ' + err.message);
+                event.target.value = '';
+            });
+        }
+
+        function handleResetToDefaults() {
+            if (!confirm('Tüm bölümler ve sorular silinip varsayılan örnek sınavla değiştirilecek. Emin misin?')) return;
+            resetTestData();
+            state = loadTestData();
+            persist();
+            fillMetaInputs();
+            renderSections();
+        }
+
+        /* ------------------------------------------------------- */
+        /* Başlat                                                   */
+        /* ------------------------------------------------------- */
+        fillMetaInputs();
+        renderSections();
+    </script>
+<script src="shared.js"></script>
+</body>
+</html>
